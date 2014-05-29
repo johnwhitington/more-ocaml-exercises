@@ -9,5 +9,5 @@ OCAMLLDFLAGS = -g
 
 all : native-code-library byte-code-library native-code byte-code top
 
--include OCamlMakefile
+include OCamlMakefile
 
