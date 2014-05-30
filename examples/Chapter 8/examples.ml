@@ -1,43 +1,38 @@
-let sum l = List.fold_left ( + ) 0 l
+(* Printf examples *)
 
-let maxlist l = List.fold_left max min_int l
+(* Integers in columns *)
+let data =
+  [(1, 6, 5);
+   (2, 18, 4);
+   (3, 31, 12);
+   (4, 16, 2)]
 
-let all l = List.fold_left ( && ) true l
+let print_header () =
+  Printf.printf "A     | B     | C     \n";
+  Printf.printf "------+-------+-------\n"
 
-let any l = List.fold_left ( || ) false l
+let print_line a b c =
+  Printf.printf "%6i| %6i| %6i\n" a b c
 
-let concat l = List.fold_left ( @ ) [] l
+let print_nums nums =
+  print_header ();
+  List.iter (fun (a, b, c) -> print_line a b c) nums
 
-let rev l = List.fold_left (fun a e -> e :: a) [] l
+(* Things in columns, with flags and precisions. *)
+let data =
+  [(1, 35.54263, 39.42312);
+   (2, 12.31341, 23.24123);
+   (3, 13.53342, 23.21457);
+   (4, 57.74572, 126.74554)]
 
-let member x l = List.fold_left (fun a e -> e = x || a) false l
+let print_header () =
+  Printf.printf "A     | B     | C     \n";
+  Printf.printf "------+-------+-------\n"
 
-let setify l = List.fold_left (fun a e -> if List.mem e a then a else e :: a) [] l
+let print_line a b c =
+  Printf.printf "%06i| %-6.2f| %-6.2f\n" a b c
 
-type 'a tree =
-    Lf
-  | Br of 'a * 'a tree * 'a tree
-
-let rec fold_tree f e t =
-  match t with
-    Lf -> e
-  | Br (x, l, r) -> f x (fold_tree f e l) (fold_tree f e r)
-
-let example =
-  Br (1, Br (2, Lf, Lf), Br (6, Br (4, Lf, Lf), Lf))
-
-let tree_size t = fold_tree (fun _ l r -> 1 + l + r) 0 t
-
-let tree_sum t = fold_tree (fun x l r -> x + l + r) 0 t
-
-let tree_preorder t  = fold_tree (fun x l r -> [x] @ l @ r) [] t
-
-let tree_inorder t   = fold_tree (fun x l r -> l @ [x] @ r) [] t
-
-let tree_postorder t = fold_tree (fun x l r -> l @ r @ [x]) [] t
-
-let map f l = List.fold_right (fun a e -> f e :: a) l
-
-let fold_right f l e =
-  List.fold_left (fun x y -> f y x) e (rev l)
+let print_nums nums =
+  print_header ();
+  List.iter (fun (a, b, c) -> print_line a b c) nums
 

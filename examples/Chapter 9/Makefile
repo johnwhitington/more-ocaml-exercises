@@ -5,7 +5,7 @@ RESULT = examples
 
 INCDIRS = ../../
 
-LIBS = more 
+LIBS = unix more 
 
 OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g

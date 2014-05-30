@@ -1,43 +1,37 @@
-let sum l = List.fold_left ( + ) 0 l
+open More
 
-let maxlist l = List.fold_left max min_int l
+type turn = O | X | E
 
-let all l = List.fold_left ( && ) true l
+let won [a; b; c; d; e; f; g; h; i] =
+  a && b && c || d && e && f || g && h && i || a && d && g ||
+  b && e && h || c && f && i || a && e && i || c && e && g
 
-let any l = List.fold_left ( || ) false l
+let replace turn board p =
+  Util.take board (p - 1) @ [turn] @ Util.drop board p
 
-let concat l = List.fold_left ( @ ) [] l
+let empty b =
+  List.map snd (List.filter (fun (t, _) -> t = E) (List.combine b [1; 2; 3; 4; 5; 6; 7; 8; 9]))
 
-let rev l = List.fold_left (fun a e -> e :: a) [] l
+let flipturn t =
+  match t with O -> X | X -> O
 
-let member x l = List.fold_left (fun a e -> e = x || a) false l
+type tree = Move of turn list * tree list
 
-let setify l = List.fold_left (fun a e -> if List.mem e a then a else e :: a) [] l
+let rec nextmoves turn board =
+  let next =
+    if won (List.map (fun t -> t = O) board) || won (List.map (fun t -> t = X) board) then
+      []
+    else
+      List.map
+        (nextmoves (flipturn turn))
+        (List.map (replace turn board) (empty board))
+  in
+    Move (board, next)
 
-type 'a tree =
-    Lf
-  | Br of 'a * 'a tree * 'a tree
+let game_tree =
+  nextmoves O [E; E; E; E; E; E; E; E; E]
 
-let rec fold_tree f e t =
-  match t with
-    Lf -> e
-  | Br (x, l, r) -> f x (fold_tree f e l) (fold_tree f e r)
-
-let example =
-  Br (1, Br (2, Lf, Lf), Br (6, Br (4, Lf, Lf), Lf))
-
-let tree_size t = fold_tree (fun _ l r -> 1 + l + r) 0 t
-
-let tree_sum t = fold_tree (fun x l r -> x + l + r) 0 t
-
-let tree_preorder t  = fold_tree (fun x l r -> [x] @ l @ r) [] t
-
-let tree_inorder t   = fold_tree (fun x l r -> l @ [x] @ r) [] t
-
-let tree_postorder t = fold_tree (fun x l r -> l @ r @ [x]) [] t
-
-let map f l = List.fold_right (fun a e -> f e :: a) l
-
-let fold_right f l e =
-  List.fold_left (fun x y -> f y x) e (rev l)
+let rec numwins turn (Move (b, bs)) =
+  (if won (List.map (fun t -> t = turn) b) then 1 else 0) +
+  List.fold_left ( + ) 0 (List.map (numwins turn) bs)
 

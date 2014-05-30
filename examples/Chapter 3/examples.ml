@@ -1,43 +1,59 @@
-let sum l = List.fold_left ( + ) 0 l
+type 'a point =
+  {x : float;
+   y : float;
+   label : string;
+   content : 'a}
 
-let maxlist l = List.fold_left max min_int l
+let p =
+  {x = 4.5;
+   y = 6.0;
+   label = "P";
+   content = [1; 3; 1]}
 
-let all l = List.fold_left ( && ) true l
+let mkpoint x y l c =
+  {x = x; y = y; label = l; content = c}
 
-let any l = List.fold_left ( || ) false l
+let mkpoint x y label content =
+  {x; y; label; content}
 
-let concat l = List.fold_left ( @ ) [] l
+let string_of_point p =
+  p.label
+  ^ " = ("
+  ^ string_of_float p.x
+  ^ ", "
+  ^ string_of_float p.y
+  ^ ")"
 
-let rev l = List.fold_left (fun a e -> e :: a) [] l
+let string_of_point {label = l; x = x; y = y} =
+  l
+  ^ " = ("
+  ^ string_of_float x
+  ^ ", "
+  ^ string_of_float y
+  ^ ")"
 
-let member x l = List.fold_left (fun a e -> e = x || a) false l
+let string_of_point {label = l; x = x; y = y; _} =
+  l
+  ^ " = ("
+  ^ string_of_float x
+  ^ ", "
+  ^ string_of_float y
+  ^ ")"
 
-let setify l = List.fold_left (fun a e -> if List.mem e a then a else e :: a) [] l
+let string_of_point {label; x; y; _} =
+  label
+  ^ " = ("
+  ^ string_of_float x
+  ^ ", "
+  ^ string_of_float y
+  ^ ")"
 
-type 'a tree =
-    Lf
-  | Br of 'a * 'a tree * 'a tree
+let relabel p l = {p with label = l}
 
-let rec fold_tree f e t =
-  match t with
-    Lf -> e
-  | Br (x, l, r) -> f x (fold_tree f e l) (fold_tree f e r)
+let relabel p label = {p with label}
 
-let example =
-  Br (1, Br (2, Lf, Lf), Br (6, Br (4, Lf, Lf), Lf))
+let mirror p = {p with x = p.y; y = p.x}
 
-let tree_size t = fold_tree (fun _ l r -> 1 + l + r) 0 t
 
-let tree_sum t = fold_tree (fun x l r -> x + l + r) 0 t
 
-let tree_preorder t  = fold_tree (fun x l r -> [x] @ l @ r) [] t
-
-let tree_inorder t   = fold_tree (fun x l r -> l @ [x] @ r) [] t
-
-let tree_postorder t = fold_tree (fun x l r -> l @ r @ [x]) [] t
-
-let map f l = List.fold_right (fun a e -> f e :: a) l
-
-let fold_right f l e =
-  List.fold_left (fun x y -> f y x) e (rev l)
 

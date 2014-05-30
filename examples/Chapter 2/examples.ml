@@ -1,43 +1,52 @@
-let sum l = List.fold_left ( + ) 0 l
+type 'a lazylist = Cons of 'a * (unit -> 'a lazylist)
 
-let maxlist l = List.fold_left max min_int l
+let rec lzero = 
+  Cons (0, fun () -> lzero)
 
-let all l = List.fold_left ( && ) true l
+let rec lconst n = Cons (n, fun () -> lconst n)
 
-let any l = List.fold_left ( || ) false l
+let rec lseq n =
+  Cons (n, fun () -> lseq (n + 1))
 
-let concat l = List.fold_left ( @ ) [] l
+let lhd (Cons (n, _)) = n
 
-let rev l = List.fold_left (fun a e -> e :: a) [] l
+let ltl (Cons (_, tf)) = tf ()
 
-let member x l = List.fold_left (fun a e -> e = x || a) false l
+let rec ltake (Cons (h, tf)) n =
+  match n with
+    0 -> []
+  | _ -> h :: ltake (tf ()) (n - 1)
 
-let setify l = List.fold_left (fun a e -> if List.mem e a then a else e :: a) [] l
+let rec ldrop (Cons (h, tf) as ll) n =
+  match n with
+    0 -> ll
+  | _ -> ldrop (tf ()) (n - 1)
 
-type 'a tree =
-    Lf
-  | Br of 'a * 'a tree * 'a tree
+let rec lmap f (Cons (h, tf)) =
+  Cons (f h, fun () -> lmap f (tf ()))
 
-let rec fold_tree f e t =
-  match t with
-    Lf -> e
-  | Br (x, l, r) -> f x (fold_tree f e l) (fold_tree f e r)
+let rec lfilter f (Cons (h, tf)) =
+  if f h then
+    Cons (h, fun () -> lfilter f (tf ()))
+  else
+    lfilter f (tf ())
 
-let example =
-  Br (1, Br (2, Lf, Lf), Br (6, Br (4, Lf, Lf), Lf))
+let cubes =
+  lfilter
+    (fun x -> x mod 5 = 0)
+    (lmap (fun x -> x * x * x) (lseq 1))
 
-let tree_size t = fold_tree (fun _ l r -> 1 + l + r) 0 t
+let rec primes_inner (Cons (h, tf)) =
+  Cons (h, fun () -> primes_inner (lfilter (fun x -> x mod h <> 0) (tf ())))
 
-let tree_sum t = fold_tree (fun x l r -> x + l + r) 0 t
+let primes = primes_inner (lseq 2)
 
-let tree_preorder t  = fold_tree (fun x l r -> [x] @ l @ r) [] t
+let rec interleave (Cons (h, tf)) l =
+  Cons (h, fun () -> interleave l (tf ()))
 
-let tree_inorder t   = fold_tree (fun x l r -> l @ [x] @ r) [] t
+let rec allfrom l =
+  Cons (l, fun () -> interleave (allfrom (0::l)) (allfrom (1::l)))
 
-let tree_postorder t = fold_tree (fun x l r -> l @ r @ [x]) [] t
+let allones = allfrom []
 
-let map f l = List.fold_right (fun a e -> f e :: a) l
-
-let fold_right f l e =
-  List.fold_left (fun x y -> f y x) e (rev l)
 

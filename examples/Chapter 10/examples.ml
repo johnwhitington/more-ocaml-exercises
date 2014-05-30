@@ -1,43 +1,135 @@
-let sum l = List.fold_left ( + ) 0 l
+(* Introduction - factorials, lists, sets *)
 
-let maxlist l = List.fold_left max min_int l
+(* A. Basic method *)
+let rec interleave h l ls =
+  match ls with
+    [] -> [l @ [h]]
+  | x::xs -> (l @ (h :: x :: xs)) :: interleave h (l @ [x]) xs
 
-let all l = List.fold_left ( && ) true l
+let combine x ps =
+  List.concat (List.map (interleave x []) ps)
 
-let any l = List.fold_left ( || ) false l
+let rec perms p =
+  match p with
+    [] -> [[]]
+  | h::t -> combine h (perms t)
 
-let concat l = List.fold_left ( @ ) [] l
+(* # List.length (perms [1;2;3;4;5;6;7;8]);;
+- : int = 40320
+# List.length (perms [1;2;3;4;5;6;7;8;9]);;
+- : int = 362880
+# List.length (perms [1;2;3;4;5;6;7;8;9;10]);;
+Stack overflow during evaluation (looping recursion?). *)
 
-let rev l = List.fold_left (fun a e -> e :: a) [] l
+(* B. Make this tail recursive -- now 10 & 11 work, 12 too big to calculate. *)
+let map f l =
+  List.rev (List.rev_map f l)
 
-let member x l = List.fold_left (fun a e -> e = x || a) false l
+let append a b =
+  List.rev_append (List.rev a) b
 
-let setify l = List.fold_left (fun a e -> if List.mem e a then a else e :: a) [] l
+let concat lists =
+  let rec concat out = function
+    | [] -> out
+    | l::ls -> concat (append l out) ls
+  in
+    concat [] (List.rev lists)
 
-type 'a tree =
-    Lf
-  | Br of 'a * 'a tree * 'a tree
+let rec interleave acc h l ls =
+  match ls with
+    [] -> (l @ [h]) :: acc
+  | x::xs -> interleave ((l @ (h :: x :: xs)) :: acc) h (l @ [x]) xs
 
-let rec fold_tree f e t =
-  match t with
-    Lf -> e
-  | Br (x, l, r) -> f x (fold_tree f e l) (fold_tree f e r)
+let combine x ps =
+  concat (map (interleave [] x []) ps)
 
-let example =
-  Br (1, Br (2, Lf, Lf), Br (6, Br (4, Lf, Lf), Lf))
+let rec perms p =
+  match p with
+    [] -> [[]]
+  | h::t -> combine h (perms t)
 
-let tree_size t = fold_tree (fun _ l r -> 1 + l + r) 0 t
+(* C. Another method. pick each element out, and use it as the first element. Easy with sets: *) 
+let rec without x l =
+  match l with
+    [] -> []
+  | h::t when h = x -> t
+  | h::t -> h :: without x t
 
-let tree_sum t = fold_tree (fun x l r -> x + l + r) 0 t
+let rec perms l =
+  match l with
+    [] -> [[]]
+  | l ->
+      concat
+        (map
+          (fun x -> map (fun l -> x :: l) (perms (without x l)))
+          l)
 
-let tree_preorder t  = fold_tree (fun x l r -> [x] @ l @ r) [] t
+(* E. Version which can give the next permutation -- lexicographic permutation *)
+let firstchar arr =
+  let f = ref (Array.length arr - 1) in
+    for x = 0 to Array.length arr - 2 do
+      if arr.(x) < arr.(x + 1) then f := x
+    done;
+    !f
 
-let tree_inorder t   = fold_tree (fun x l r -> l @ [x] @ r) [] t
+let ceiling arr f =
+  let c = ref (-1) in
+    for x = Array.length arr - 1 downto f + 1 do
+      if arr.(x) > arr.(f) && (!c = (-1) || arr.(x) < arr.(!c)) then c := x
+    done;
+    !c
 
-let tree_postorder t = fold_tree (fun x l r -> l @ r @ [x]) [] t
+let swap arr a b =
+  let t = arr.(a) in
+    arr.(a) <- arr.(b);
+    arr.(b) <- t
 
-let map f l = List.fold_right (fun a e -> f e :: a) l
+let array_rev a o l =
+  for x = 0 to l / 2 - 1 do
+    swap a (o + x) (o + l - x - 1)
+  done
 
-let fold_right f l e =
-  List.fold_left (fun x y -> f y x) e (rev l)
+let sort_subarray arr o l =
+  let sub = Array.sub arr o l in
+    Array.sort compare sub;
+    Array.blit sub 0 arr o l
 
+let next_permutation arr_in =
+  let arr = Array.copy arr_in in
+  let f = firstchar arr in
+  let c = ceiling arr f in
+    swap arr f c;
+    sort_subarray arr (f + 1) (Array.length arr - 1 - f);
+    arr
+
+let non_increasing arr =
+  Array.length arr <= 1 ||
+    let r = ref true in
+      for x = 0 to Array.length arr - 2 do
+        if arr.(x + 1) > arr.(x) then r := false
+      done;
+      !r
+
+let all_permutations arr =
+  let copy = Array.copy arr in
+    Array.sort compare copy;
+    let perm = ref copy in
+    let perms = ref [copy] in        
+      while not (non_increasing !perm) do
+        perm := next_permutation !perm;
+        perms := !perm :: !perms;
+      done;
+      Array.of_list (List.rev !perms)
+
+(* D. Lazy method from next perm one. *)
+type 'a lazylist = Cons of 'a * (unit -> 'a lazylist)
+
+let rec perms x =
+  Cons (x, fun () ->
+    if non_increasing x then
+      let c = Array.copy x in
+        Array.sort compare c;
+        perms c
+    else
+      perms (next_permutation x))
+  
