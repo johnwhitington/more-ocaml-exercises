@@ -3,9 +3,9 @@ SOURCES = examples.ml
 
 RESULT = examples
 
-INCDIRS = ../../
+INCDIRS = ../../ ../Chapter5/
 
-LIBS = more 
+LIBS = bits
 
 OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g

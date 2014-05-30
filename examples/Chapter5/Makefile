@@ -1,7 +1,7 @@
 # Build the camlpdf library as byte code and native code
-SOURCES = examples.ml
+SOURCES = bits.ml
 
-RESULT = examples
+RESULT = bits
 
 INCDIRS = ../../ ../Chapter4/
 
@@ -11,7 +11,7 @@ OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
 
-all : native-code top
+all : native-code native-code-library byte-code-library top
 
 OCAMLMAKEFILE = ../../OCamlMakefile
 
