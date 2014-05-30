@@ -1,11 +1,11 @@
 # Build the camlpdf library as byte code and native code
-SOURCES = examples.ml
+SOURCES = circles.ml
 
-RESULT = examples
+RESULT = circles
 
-INCDIRS = ../../
+INCDIRS = ../../../ ../
 
-LIBS = more 
+LIBS = pdfmain 
 
 OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g
@@ -13,6 +13,7 @@ OCAMLLDFLAGS = -g
 
 all : native-code top
 
-OCAMLMAKEFILE = ../../OCamlMakefile
+OCAMLMAKEFILE = ../../../OCamlMakefile
 
 include $(OCAMLMAKEFILE)
+
