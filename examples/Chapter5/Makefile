@@ -1,11 +1,11 @@
 # Build the camlpdf library as byte code and native code
 SOURCES = examples.ml
 
-RESULT = input
+RESULT = examples
 
-INCDIRS = ../../
+INCDIRS = ../../ ../Chapter4/
 
-LIBS = more 
+LIBS = input
 
 OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g

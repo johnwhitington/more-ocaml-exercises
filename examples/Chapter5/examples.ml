@@ -1,4 +1,6 @@
 (* Bit streams *)
+open Input
+
 type input_bits =
   {input : input;
    mutable byte : int;
