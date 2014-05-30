@@ -1,26 +1,8 @@
+open More
+
 let substring = "row"
 
 let string = "this is a rower."
-
-    let take l n =
-      if n < 0 then raise (Invalid_argument "take") else
-      let rec take_inner r l n =
-        if n = 0 then List.rev r else
-          match l with
-          | [] -> raise (Invalid_argument "take")
-          | h::t -> take_inner (h::r) t (n - 1)
-      in
-        take_inner [] l n
-
-    let rec drop_inner n = function
-      | [] -> raise (Invalid_argument "drop")
-      | _::t -> if n = 1 then t else drop_inner (n - 1) t
-
-    let drop l n =
-      if n < 0 then raise (Invalid_argument "drop") else
-      if n = 0 then l else
-        drop_inner n l
-
 
 let explode s =
   let l = ref [] in
@@ -42,13 +24,13 @@ let implode l =
 let rec search_list p l =
     List.length p <= List.length l
   && 
-    (take l (List.length p) = p || search_list p (List.tl l))
+    (Util.take l (List.length p) = p || search_list p (List.tl l))
 
 (* Without all the List.lengths *)
 let rec search_list_inner p len_p l len_l =
     len_p <= len_l
   &&
-    (take l len_p = p ||
+    (Util.take l len_p = p ||
      search_list_inner p len_p (List.tl l) (len_l - 1))
 
 let search_list p l =

@@ -1,72 +1,10 @@
-let take l n =
-  if n < 0 then raise (Invalid_argument "take") else
-  let rec take_inner r l n =
-    if n = 0 then List.rev r else
-      match l with
-      | [] -> raise (Invalid_argument "take")
-      | h::t -> take_inner (h::r) t (n - 1)
-  in
-    take_inner [] l n
-
-let rec drop_inner n = function
-  | [] -> raise (Invalid_argument "drop")
-  | _::t -> if n = 1 then t else drop_inner (n - 1) t
-
-let drop l n =
-  if n < 0 then raise (Invalid_argument "drop") else
-  if n = 0 then l else
-    drop_inner n l
-
-type input =
-  {pos_in : unit -> int;
-   seek_in : int -> unit;
-   input_char : unit -> char;
-   in_channel_length : int}
-
-let input_of_channel ch =
-  {pos_in = (fun () -> pos_in ch);
-   seek_in = seek_in ch;
-   input_char = (fun () -> input_char ch);
-   in_channel_length = in_channel_length ch}
-
-let input_of_string s =
-  let pos = ref 0 in
-    {pos_in = (fun () -> !pos);
-     seek_in =
-       (fun p ->
-          if p < 0 then raise (Invalid_argument "seek before beginning");
-          pos := p);
-     input_char =
-       (fun () ->
-         if !pos > String.length s - 1
-           then raise End_of_file
-           else (let c = s.[!pos] in pos := !pos + 1; c));
-     in_channel_length = String.length s}
-
-type output =
-  {output_char : char -> unit;
-   out_channel_length : unit -> int}
-
-let output_of_channel ch =
-  {output_char = (fun c -> output_byte ch (int_of_char c));
-   out_channel_length = (fun () -> out_channel_length ch)}
-
-let output_of_string s =
-  let pos = ref 0 in
-    {output_char =
-       (fun c ->
-          if !pos < String.length s
-            then (s.[!pos] <- c; pos := !pos + 1)
-            else raise End_of_file);
-     out_channel_length =
-       (fun () -> String.length s)}
+open More
+open Input
+open Bits
 
 let output_of_buffer b =
   {output_char = Buffer.add_char b;
    out_channel_length = fun () -> Buffer.length b}
-
-let rewind i =
-  i.seek_in (i.pos_in () - 1)
 
 let string_of_int_list l =
   let s = String.create (List.length l) in
@@ -152,28 +90,6 @@ let decompress_string = process decompress
 let testinput = int_list_of_string "cooooooooooompressssssss me!"
 
 (* CCITT Fax Group 3 Encoding *)
-type input_bits =
-  {input : input;
-   mutable byte : int;
-   mutable bit : int}
-
-let input_bits_of_input i =
-  {byte = 0;
-   bit = 0;
-   input = i}
-
-let rec getbit b =
-  if b.bit = 0 then
-    begin
-      b.byte <- int_of_char (b.input.input_char ());
-      b.bit <- 128;
-      getbit b
-    end
-  else
-    let r = b.byte land b.bit > 0 in
-      b.bit <- b.bit / 2;
-      r
-
 let getbitint b =
   if getbit b then 1 else 0
   
@@ -187,45 +103,10 @@ let peekbit b =
   else
     b.byte land b.bit > 0
 
-let align b =
-  b.bit <- 0
-
-let getval b n =
-  if n <= 0 || n > 31 then
-    raise (Invalid_argument "getval")
-  else
-    let r = ref 0 in
-      for x = n - 1 downto 0 do
-        r := !r lor ((if getbit b then 1 else 0) lsl x)
-      done;
-      !r
-
-let getval_32 b n =
-  if n < 0 then raise (Invalid_argument "getval_32") else
-    if n = 0 then 0l else
-      let r = ref Int32.zero in
-        for x = n - 1 downto 0 do
-          r := Int32.logor !r (Int32.shift_left (Int32.of_int ((if getbit b then 1 else 0))) x)
-        done;
-        !r
-
 (* Output bit streams *)
-type output_bits =
-  {output : output; (* underlying output *)
-   mutable obyte : int; (* the byte we're building up *)
-   mutable obit : int}
-
-let output_bits_of_output output =
-  {output;
-   obyte = 0;
-   obit = 7}
 
 (* Flush a byte to the underlying output, padding with zeroes. If output byte
  * has not been touched, don't output. *)
-let flush o =
-  if o.obit < 7 then o.output.output_char (char_of_int o.obyte);
-  o.obyte <- 0;
-  o.obit <- 7
 
 let rec putbit o b =
   if o.obit = -1 then
@@ -868,8 +749,8 @@ let rec decompress_inner a l =
   | [] | [_] -> raise (Invalid_argument "decompress_inner")
   | h::t::t' ->
       if h < 127 then
-        let bytes = take (t :: t') (h + 1) in
-        let rest = drop (t :: t') (h + 1) in
+        let bytes = Util.take (t :: t') (h + 1) in
+        let rest = Util.drop (t :: t') (h + 1) in
           decompress_inner (bytes :: a) rest
       else if h > 128 then
         decompress_inner (Array.to_list (Array.make (257 - h) t) :: a) t' 

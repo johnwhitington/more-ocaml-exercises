@@ -1,3 +1,5 @@
+open More
+
 (* Labelled and Optional Arguments examples *)
 
 (* Document with labels. Punning. Label different from name. Missing out labels. Boolean example. *)
@@ -58,25 +60,6 @@ let f = divide ~y:10000
 let _ = [f 100000; f 10000; f 1000]
 
 (* Optional arguments and their role in extending APIs. *)
-let take l n =
-  if n < 0 then raise (Invalid_argument "take") else
-    let rec take_inner r l n =
-      if n = 0 then List.rev r else
-        match l with
-        | [] -> raise (Invalid_argument "take")
-        | h::t -> take_inner (h::r) t (n - 1)
-    in
-      take_inner [] l n
-
-let rec drop_inner n = function
-  | [] -> raise (Invalid_argument "drop")
-  | _::t -> if n = 1 then t else drop_inner (n - 1) t
-
-let drop l n =
-  if n < 0 then raise (Invalid_argument "drop") else
-  if n = 0 then l else
-    drop_inner n l
- 
 let rec split l =
   match l with
     [] -> []
@@ -84,13 +67,13 @@ let rec split l =
 
 let rec split ~chunksize l =
   try
-    take l chunksize :: split ~chunksize (drop l chunksize)
+    Util.take l chunksize :: split ~chunksize (Util.drop l chunksize)
   with
     _ -> match l with [] -> [] | _ -> [l]
 
 let rec split ?(chunksize=1) l =
   try
-    take l chunksize :: split ~chunksize (drop l chunksize)
+    Util.take l chunksize :: split ~chunksize (Util.drop l chunksize)
   with
     _ -> match l with [] -> [] | _ -> [l]
 
@@ -99,7 +82,7 @@ let rec split ?chunksize l =
     match chunksize with None -> 1 | Some x -> x
   in
     try
-      take l ch :: split ~chunksize:ch (drop l ch)
+      Util.take l ch :: split ~chunksize:ch (Util.drop l ch)
     with
       _ -> match l with [] -> [] | _ -> [l]
 
