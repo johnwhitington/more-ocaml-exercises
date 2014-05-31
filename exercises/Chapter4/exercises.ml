@@ -4,6 +4,11 @@ type input =
    input_char : unit -> char;
    in_channel_length : int}
 
+type input_bits =
+  {input : input;
+   mutable byte : int;
+   mutable bit : int}
+
 (* 1 *)
 let input_of_array a =
   let pos = ref 0 in
