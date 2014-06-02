@@ -3,7 +3,7 @@ SOURCES = circles.ml
 
 RESULT = circles
 
-INCDIRS = ../../../ ../
+INCDIRS = ../../../more/ ../
 
 LIBS = pdfmain 
 
@@ -13,7 +13,7 @@ OCAMLLDFLAGS = -g
 
 all : native-code top
 
-OCAMLMAKEFILE = ../../../OCamlMakefile
+OCAMLMAKEFILE = ../../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)
 

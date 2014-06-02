@@ -3,7 +3,7 @@ SOURCES = examples.ml
 
 RESULT = examples
 
-INCDIRS = ../../ ../Chapter5/ ../Chapter4/
+INCDIRS = ../../more/ ../Chapter5/ ../Chapter4/
 
 LIBS = input bits
 
@@ -13,6 +13,6 @@ OCAMLLDFLAGS = -g
 
 all : byte-code top
 
-OCAMLMAKEFILE = ../../OCamlMakefile
+OCAMLMAKEFILE = ../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)

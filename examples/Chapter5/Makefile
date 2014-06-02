@@ -3,7 +3,7 @@ SOURCES = bits.ml
 
 RESULT = bits
 
-INCDIRS = ../../ ../Chapter4/
+INCDIRS = ../../more/ ../Chapter4/
 
 LIBS = input
 
@@ -13,6 +13,6 @@ OCAMLLDFLAGS = -g
 
 all : native-code native-code-library byte-code-library top
 
-OCAMLMAKEFILE = ../../OCamlMakefile
+OCAMLMAKEFILE = ../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)

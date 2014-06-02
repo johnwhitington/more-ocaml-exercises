@@ -3,7 +3,7 @@ SOURCES = input.ml
 
 RESULT = input
 
-INCDIRS = ../../
+INCDIRS = ../../more/
 
 LIBS = more 
 
@@ -13,6 +13,6 @@ OCAMLLDFLAGS = -g
 
 all : native-code byte-code-library native-code-library top
 
-OCAMLMAKEFILE = ../../OCamlMakefile
+OCAMLMAKEFILE = ../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)

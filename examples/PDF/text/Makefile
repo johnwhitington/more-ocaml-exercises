@@ -3,7 +3,7 @@ SOURCES = text.ml
 
 RESULT = text
 
-INCDIRS = ../../../ ../ ../../Chapter4/
+INCDIRS = ../../../more/ ../ ../../Chapter4/
 
 LIBS = input pdfmain 
 
@@ -13,7 +13,7 @@ OCAMLLDFLAGS = -g
 
 all : byte-code top
 
-OCAMLMAKEFILE = ../../../OCamlMakefile
+OCAMLMAKEFILE = ../../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)
 

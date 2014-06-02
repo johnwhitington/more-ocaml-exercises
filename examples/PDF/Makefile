@@ -5,7 +5,7 @@ SOURCES = $(foreach x,$(PDFMODS),$(x).ml $(x).mli)
 
 MODS = more
 
-INCDIRS = ../../
+INCDIRS = ../../more/
 
 RESULT = pdfmain
 
@@ -15,7 +15,7 @@ OCAMLLDFLAGS = -g
 
 all : native-code native-code-library byte-code byte-code-library top htdoc
 
-OCAMLMAKEFILE = ../../OCamlMakefile
+OCAMLMAKEFILE = ../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)
 
