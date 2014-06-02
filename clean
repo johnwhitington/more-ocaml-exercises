@@ -1,0 +1,19 @@
+#!/bin/bash
+cd more; make clean
+cd -; cd examples/Chapter1; make clean
+cd -; cd examples/Chapter2; make clean
+cd -; cd examples/Chapter3; make clean
+cd -; cd examples/Chapter4; make clean
+cd -; cd examples/Chapter5; make clean
+cd -; cd examples/Chapter6; make clean
+cd -; cd examples/Chapter7; make clean
+cd -; cd examples/Chapter8; make clean
+cd -; cd examples/Chapter9; make clean
+cd -; cd examples/Chapter10; make clean
+cd -; cd examples/Chapter11; make clean
+cd -; cd examples/Chapter12; make clean
+cd -; cd examples/PDF; make clean
+cd -; cd examples/PDF/circles; make clean
+cd -; cd examples/PDF/text; make clean
+cd -; rm -r examples/PDF/doc
+

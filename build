@@ -1,0 +1,18 @@
+#!/bin/bash
+cd more; make
+cd -; cd examples/Chapter1; make
+cd -; cd examples/Chapter2; make
+cd -; cd examples/Chapter3; make
+cd -; cd examples/Chapter4; make
+cd -; cd examples/Chapter5; make
+cd -; cd examples/Chapter6; make
+cd -; cd examples/Chapter7; make
+cd -; cd examples/Chapter8; make
+cd -; cd examples/Chapter9; make
+cd -; cd examples/Chapter10; make
+cd -; cd examples/Chapter11; make
+cd -; cd examples/Chapter12; make
+cd -; cd examples/PDF; make
+cd -; cd examples/PDF/circles; make
+cd -; cd examples/PDF/text; make
+
