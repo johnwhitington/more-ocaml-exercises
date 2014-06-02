@@ -3,7 +3,7 @@ SOURCES = input.ml text.ml
 
 RESULT = text
 
-INCDIRS = ../../../ ../../../examples/pdf/ ../../../examples
+INCDIRS = ../../../more/ ../../../examples/pdf/ ../../../examples
 
 LIBS = more pdfmain 
 
@@ -13,7 +13,7 @@ OCAMLLDFLAGS = -g
 
 all : native-code top
 
-OCAMLMAKEFILE = ../../../OCamlMakefile
+OCAMLMAKEFILE = ../../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)
 

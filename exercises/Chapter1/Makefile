@@ -3,7 +3,7 @@ SOURCES = exercises.ml
 
 RESULT = exercises
 
-INCDIRS = ../../
+INCDIRS = ../../more/
 
 LIBS = more 
 
@@ -13,6 +13,6 @@ OCAMLLDFLAGS = -g
 
 all : native-code top
 
-OCAMLMAKEFILE = ../../OCamlMakefile
+OCAMLMAKEFILE = ../../more/OCamlMakefile
 
 include $(OCAMLMAKEFILE)
