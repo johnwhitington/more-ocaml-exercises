@@ -14,6 +14,12 @@ let member x l = List.fold_left (fun a e -> e = x || a) false l
 
 let setify l = List.fold_left (fun a e -> if List.mem e a then a else e :: a) [] l
 
+let identity l = List.fold_right (fun e a -> e :: a) l []
+
+let append x y = List.fold_right (fun e a -> e :: a) x y
+
+let split l = List.fold_right (fun (x, y) (xs, ys) -> (x :: xs, y :: ys)) l ([], [])
+
 type 'a tree =
     Lf
   | Br of 'a * 'a tree * 'a tree
@@ -39,5 +45,5 @@ let tree_postorder t = fold_tree (fun x l r -> l @ r @ [x]) [] t
 let map f l = List.fold_right (fun a e -> f e :: a) l
 
 let fold_right f l e =
-  List.fold_left (fun x y -> f y x) e (rev l)
+  List.fold_left (fun x y -> f y x) e (List.rev l)
 

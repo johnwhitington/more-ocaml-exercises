@@ -5,7 +5,7 @@ RESULT = exercises
 
 INCDIRS = ../../more/
 
-LIBS = more 
+LIBS = unix more 
 
 OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g

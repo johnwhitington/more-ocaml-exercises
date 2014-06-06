@@ -42,12 +42,21 @@ let max_depth l =
   fold_tree (fun _ l r -> 1 + max l r) 0 l
 
 (* 8 *)
-let l = [1; 2; 3; 2; 1; 2; 2; 5; 32; 2; 34; 4; 2; 56]
+let l = [1; 2; 3; 2; 1; 2; 2; 56; 32; 2; 34; 4; 2]
 
-(*let _ =
-  for x = 1 to 100_000_00 do member 56 l done
+let t = Unix.gettimeofday ()
 
 let _ =
-  for x = 1 to 100_000_00 do List.mem 56 l done*)
+  for x = 1 to 10_000_000 do ignore (member 56 l) done
 
+let t' = Unix.gettimeofday ()
+
+let _ =
+  for x = 1 to 10_000_000 do ignore (List.mem 56 l) done
+
+let t'' = Unix.gettimeofday ()
+
+let _ =
+  Printf.printf "Our member took %f seconds\n" (t' -. t);
+  Printf.printf "List.mem took %f seconds\n" (t'' -. t')
 
