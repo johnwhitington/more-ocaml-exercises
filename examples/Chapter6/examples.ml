@@ -393,11 +393,9 @@ let rec read_up_to v i n w =
 let encode_fax i o w h =
   let rec encode_fax_line i o w =
     if w > 0 then
-      begin
-        let n, isblack = read_up_to (peekbit i) i 0 w in
-          List.iter (putbitint o) (code isblack n);
-          encode_fax_line i o (w - n)
-      end
+      let n, isblack = read_up_to (peekbit i) i 0 w in
+        List.iter (putbitint o) (code isblack n);
+        encode_fax_line i o (w - n)
   in
     for x = 1 to h do
       if peekbit i then List.iter (putbitint o) (code true 0);

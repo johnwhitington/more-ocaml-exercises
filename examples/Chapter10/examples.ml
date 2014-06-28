@@ -22,19 +22,6 @@ let rec perms p =
 Stack overflow during evaluation (looping recursion?). *)
 
 (* B. Make this tail recursive -- now 10 & 11 work, 12 too big to calculate. *)
-let map f l =
-  List.rev (List.rev_map f l)
-
-let append a b =
-  List.rev_append (List.rev a) b
-
-let concat lists =
-  let rec concat out = function
-    | [] -> out
-    | l::ls -> concat (append l out) ls
-  in
-    concat [] (List.rev lists)
-
 let rec interleave acc h l ls =
   match ls with
     [] -> (l @ [h]) :: acc
