@@ -12,8 +12,27 @@ cd -; cd examples/Chapter9; make clean
 cd -; cd examples/Chapter10; make clean
 cd -; cd examples/Chapter11; make clean
 cd -; cd examples/Chapter12; make clean
+cd -; cd exercises/Chapter1; make clean
+cd -; cd exercises/Chapter2; make clean
+cd -; cd exercises/Chapter3; make clean
+cd -; cd exercises/Chapter4; make clean
+cd -; cd exercises/Chapter5; make clean
+cd -; cd exercises/Chapter6; make clean
+cd -; cd exercises/Chapter7; make clean
+cd -; cd exercises/Chapter8; make clean
+cd -; cd exercises/Chapter9; make clean
+cd -; cd exercises/Chapter10; make clean
+cd -; cd exercises/Chapter11; make clean
+cd -; cd exercises/Chapter12; make clean
 cd -; cd examples/PDF; make clean
 cd -; cd examples/PDF/circles; make clean
 cd -; cd examples/PDF/text; make clean
+cd -; cd exercises/PDF/textq1; make clean
+cd -; cd exercises/PDF/textq2; make clean
+cd -; cd exercises/PDF/textq3; make clean
+cd -; cd exercises/PDF/textq4; make clean
+cd -; cd exercises/PDF/writingq1; make clean
+cd -; cd exercises/PDF/writingq2; make clean
+cd -; cd exercises/PDF/writingq3; make clean
 cd -; rm -r examples/PDF/doc
 
