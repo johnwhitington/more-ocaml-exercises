@@ -1,4 +1,4 @@
-let rec string_of_array a =
+(*let rec string_of_array a =
   let b = Buffer.create 100 in
     Buffer.add_string b "[";
     List.iter
@@ -7,9 +7,20 @@ let rec string_of_array a =
          Buffer.add_string b (string_of_pdfobject s))
       a;
     Buffer.add_string b " ]";
+    Buffer.contents b*)
+
+let rec string_of_array a =
+  let b = Buffer.create 100 in
+    Buffer.add_string b "[";
+    List.iter
+      (fun s ->
+         if Buffer.length b > 1 then Buffer.add_char b ' ';
+         Buffer.add_string b (string_of_pdfobject s))
+      a;
+    Buffer.add_string b "]";
     Buffer.contents b
 
-and string_of_dictionary d =
+(*and string_of_dictionary d =
   let b = Buffer.create 100 in
     Buffer.add_string b "<<";
     List.iter
@@ -20,6 +31,19 @@ and string_of_dictionary d =
          Buffer.add_string b (string_of_pdfobject v))
       d;
     Buffer.add_string b " >>";
+    Buffer.contents b*)
+
+and string_of_dictionary d =
+  let b = Buffer.create 100 in
+    Buffer.add_string b "<<";
+    List.iter
+      (fun (k, v) ->
+         if Buffer.length b > 2 then Buffer.add_char b ' ';
+         Buffer.add_string b k;
+         Buffer.add_char b ' ';
+         Buffer.add_string b (string_of_pdfobject v))
+      d;
+    Buffer.add_string b ">>";
     Buffer.contents b
 
 and string_of_stream dict data =
