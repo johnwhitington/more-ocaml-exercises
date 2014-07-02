@@ -1,7 +1,7 @@
 # Build the camlpdf library as byte code and native code
-SOURCES = input.ml text.ml
+SOURCES = input.ml compressed.ml
 
-RESULT = text
+RESULT = compressed
 
 INCDIRS = ../../../more/ ../../../examples/pdf/ ../../../examples
 
