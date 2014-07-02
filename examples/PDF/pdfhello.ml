@@ -9,6 +9,12 @@ let box =
 let hello_text =
   "1 0 0 1 50 770 cm BT /F0 36 Tf (Hello, World!) Tj ET"
 
+let hello_text2 =
+  "1 0 0 1 50 770 cm BT /F0 36 Tf (Hello, World 2!) Tj ET"
+
+let hello_text3 =
+  "1 0 0 1 50 770 cm BT /F0 36 Tf (Hello, World 3!) Tj ET"
+
 (*let box_string =
   Pdfpage.string_of_ops box*)
 
@@ -54,7 +60,7 @@ let hello =
         ("/Root", Pdf.Indirect 2);
         ("/ID", Pdf.Array [Pdf.String "FIXME"; Pdf.String "FIXME"])]}
 
-let objects3 str =
+let objects3 str str2 str3 =
   [(1,
      Pdf.Dictionary
        [("/Type", Pdf.Name "/Page");
@@ -97,7 +103,7 @@ let objects3 str =
                 [Pdf.Float 0.; Pdf.Float 0.;
                  Pdf.Float 595.275590551; Pdf.Float 841.88976378]);
           ("/Rotate", Pdf.Integer 0);
-          ("/Contents", Pdf.Array [Pdf.Indirect 4])]);
+          ("/Contents", Pdf.Array [Pdf.Indirect 8])]);
     (7,
        Pdf.Dictionary
          [("/Type", Pdf.Name "/Page");
@@ -108,14 +114,20 @@ let objects3 str =
                 [Pdf.Float 0.; Pdf.Float 0.;
                  Pdf.Float 595.275590551; Pdf.Float 841.88976378]);
           ("/Rotate", Pdf.Integer 0);
-          ("/Contents", Pdf.Array [Pdf.Indirect 4])])]
+          ("/Contents", Pdf.Array [Pdf.Indirect 9])]);
+   (8,
+     Pdf.Stream
+       (Pdf.Dictionary [("/Length", Pdf.Integer (String.length str2))], str2));
+   (9,
+     Pdf.Stream
+       (Pdf.Dictionary [("/Length", Pdf.Integer (String.length str3))], str3))]
 
 let hello3 =
   {Pdf.version = (1, 1);
-   Pdf.objects = objects3 hello_text;
+   Pdf.objects = objects3 hello_text hello_text2 hello_text3;
    Pdf.trailer =
      Pdf.Dictionary
-       [("/Size", Pdf.Integer 9);
+       [("/Size", Pdf.Integer 10);
         ("/Root", Pdf.Indirect 2);
         ("/ID", Pdf.Array [Pdf.String "FIXME"; Pdf.String "FIXME"])]}
 
