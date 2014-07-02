@@ -3,5 +3,8 @@ let _ =
   Pdfwrite.pdf_to_file Pdfhello.hello "hello.pdf"
 
 let _ =
+  Pdfwrite.pdf_to_file Pdfhello.hello3 "hello3.pdf"
+
+let _ =
   Pdfwrite.pdf_to_file Pdfhello.graph "graph.pdf"
 
