@@ -1,11 +1,11 @@
 # Build the camlpdf library as byte code and native code
-SOURCES = input.ml compressed.ml
+SOURCES = compressed.ml
 
 RESULT = compressed
 
-INCDIRS = ../../../more/ ../../../examples/pdf/ ../../../examples
+INCDIRS = ../../../more/ ../../../examples/Chapter4/ ../../../examples/Chapter5/ ../../../examples/pdf/ ../../../examples
 
-LIBS = more pdfmain 
+LIBS = more input bits pdfmain 
 
 OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g
