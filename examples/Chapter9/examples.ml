@@ -73,8 +73,22 @@ let rec search' n ss s =
 
 let search = search' 0
 
-(* Boyer Moore *)
 
+(* The same algorith, but with:
+
+? : zero or one matches of the next character
+* : zero or more matches of the next character
++ : one or more matches of the next character *)
+
+let rec at ss ssp s sp l =
+  l = 0 || ss.[ssp] = s.[sp] && at ss (ssp + 1) s (sp + 1) (l - 1)
+
+let rec search' n ss s =
+    String.length ss <= String.length s - n
+  &&
+    (at ss 0 s n (String.length ss) || search' (n + 1) ss s)
+
+let search = search' 0
 
 (* Exercises *)
 
