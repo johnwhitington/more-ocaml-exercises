@@ -73,20 +73,45 @@ let rec search' n ss s =
 
 let search = search' 0
 
-
 (* The same algorith, but with:
 
 ? : zero or one matches of the next character
 * : zero or more matches of the next character
-+ : one or more matches of the next character *)
++ : one or more matches of the next character
+\ : escape *)
 
 let rec at ss ssp s sp l =
-  l = 0 || ss.[ssp] = s.[sp] && at ss (ssp + 1) s (sp + 1) (l - 1)
+  Printf.printf "\nssp = %i, sp = %i, l = %i\n" ssp sp l;
+  l = 0 ||
+    let matched, jump_ss, jump_s, jump_l =
+      match ss.[ssp] with
+         '?' ->
+           (* ? is at the end of the pattern - no match *)
+           if ssp + 1 > String.length ss - 1 then (print_string "A"; (false, 0, 0, l))
+           (* There is no character in the string left to match *)
+           else if sp + 1 > String.length s - 1 then (print_string "B"; (true, 0, 0, l))
+           (* Test the character. It is there.. *)
+           else if ss.[ssp + 1] = s.[sp] then (print_string "C"; (true, 2, 1, 2))
+           (* It is not there. Zero occurances *)
+           else (print_string "D"; (true, 2, 0, 2))
+       | '*' -> ('*' = s.[sp], 1, 1, 1)
+       | '+' -> ('+' = s.[sp], 1, 1, 1)
+       | '\\' ->
+           (* Next character to be taken literally *)
+           print_string "F";
+           let matched =
+             (sp < String.length s &&
+              ssp < String.length ss - 1 &&
+              ss.[ssp + 1] = s.[sp])
+           in
+             (matched, 2, 1, 2)
+       | c -> (print_string "E"; (sp < String.length s && c = s.[sp], 1, 1, 1))
+    in
+      matched && at ss (ssp + jump_ss) s (sp + jump_s) (l - jump_l)
 
 let rec search' n ss s =
-    String.length ss <= String.length s - n
-  &&
-    (at ss 0 s n (String.length ss) || search' (n + 1) ss s)
+  n < String.length s &&
+  (at ss 0 s n (String.length ss) || search' (n + 1) ss s)
 
 let search = search' 0
 
@@ -162,4 +187,11 @@ let profile f =
 let _ =
   Printf.printf "Naive version took %f seconds\n" (profile search_naive);
   Printf.printf "Better version tool %f seconds\n" (profile search_better)
+
+(* 5. Case-insensitive search *)
+let search ?(nocase = false) ss s =
+  if nocase then
+    search' 0 (String.uppercase ss) (String.uppercase s)
+  else
+    search' 0 ss s
 
