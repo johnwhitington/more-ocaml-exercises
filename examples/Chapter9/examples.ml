@@ -87,43 +87,75 @@ let swallow_all ch ss sp =
     while !p < String.length ss && ss.[!p] = ch do p := !p + 1 done;
     !p
 
-let rec at ss ssp s sp l =
-  (*Printf.printf "\nssp = %i, sp = %i, l = %i\n" ssp sp l;*)
-  l = 0 ||
-    let matched, jump_ss, jump_s, jump_l =
+let rec at ss ssp s sp =
+  (*Printf.printf "\nssp = %i, sp = %i" ssp sp;*)
+  ssp > String.length ss - 1 ||
+    match
       match ss.[ssp] with
          '?' ->
-           if ssp + 1 > String.length ss - 1 then (false, 0, 0, l) (* ? at end of pattern *)
-           else if sp > String.length s - 1 then (true, 0, 0, l) (* No char left to match *)
-           else if ss.[ssp + 1] = s.[sp] then (true, 2, 1, 2) (* match *)
-           else (true, 2, 0, 2) (* no match *)
+           if ssp + 1 > String.length ss - 1 then None (* ? at end of pattern *)
+           else if sp > String.length s - 1 then Some (String.length ss - ssp, 0) (* No char left to match *)
+           else if ss.[ssp + 1] = s.[sp] then Some (2, 1) (* match *)
+           else Some (2, 0) (* no match *)
        | '*' -> 
-           if ssp + 1 > String.length ss - 1 then (false, 0, 0, l) else (* * at end of pattern *)
-             let n = swallow_all ss.[ssp + 1] ss sp in (true, 2, n, 2) (* read zero or more items *)
+           if ssp + 1 > String.length ss - 1 then None else (* * at end of pattern *)
+             Some (2, swallow_all ss.[ssp + 1] ss sp) (* read zero or more items *)
        | '+' ->
-           if ssp + 1 > String.length ss - 1 then (false, 0, 0, l) (* + at end of pattern *)
-           else if sp > String.length s - 1 then (false, 0, 0, l) (* Nothing left to match *)
+           if ssp + 1 > String.length ss - 1 then None (* + at end of pattern *)
+           else if sp > String.length s - 1 then None (* Nothing left to match *)
            else if ss.[ssp + 1] = s.[sp] then
-             let n = swallow_all ss.[ssp + 1] ss sp in (true, 2, n, 2) (* read one or more items *)
-           else (false, 0, 0, l) (* did not match *)
-       | '\\' ->
-           (* Next character to be taken literally *)
+             Some (2, swallow_all ss.[ssp + 1] ss sp) (* read one or more items *)
+           else None (* did not match *)
+       | '\\' -> (* Next character to be taken literally *)
            let matched =
              (sp < String.length s &&
               ssp < String.length ss - 1 &&
               ss.[ssp + 1] = s.[sp])
            in
-             (matched, 2, 1, 2)
-       | c -> (sp < String.length s && c = s.[sp], 1, 1, 1)
-    in
-      matched && at ss (ssp + jump_ss) s (sp + jump_s) (l - jump_l)
+             if matched then Some (2, 1) else None
+       | c ->
+           if sp < String.length s && c = s.[sp] then None else Some (1, 1)
+    with
+      None -> false
+    | Some (jump_ss, jump_s) -> at ss (ssp + jump_ss) s (sp + jump_s)
 
 let rec search' n ss s =
-  Printf.printf "\nsearch' %i\n" n;
-  n <= String.length s &&
-  (at ss 0 s n (String.length ss) || search' (n + 1) ss s)
+  n <= String.length s && (at ss 0 s n || search' (n + 1) ss s)
 
 let search = search' 0
+
+let tests = 
+  [("", "");
+   ("a", "");
+   ("a", "a");
+   ("ab", "aaab");
+   ("ab", "b");
+   ("ab", "c");
+   ("+", "");
+   ("+a", "");
+   ("+a", "a");
+   ("+ab", "aaab");
+   ("+ab", "b");
+   ("+ab", "c");
+   ("*", "");
+   ("*a", "");
+   ("*a", "a");
+   ("*ab", "aaab");
+   ("*ab", "b");
+   ("*ab", "c");
+   ("?", "");
+   ("?a", "");
+   ("?a", "a");
+   ("?ab", "aaab");
+   ("?ab", "b");
+   ("?ab", "c")]
+
+let _ =
+  List.iter
+    (fun (pattern, str) ->
+       Printf.printf "Pattern %-10sString %-10s%-10b\n"
+       pattern str (search pattern str))
+    tests
 
 (* Exercises *)
 
