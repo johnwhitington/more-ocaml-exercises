@@ -125,36 +125,42 @@ let rec search' n ss s =
 let search = search' 0
 
 let tests = 
-  [("", "");
-   ("a", "");
-   ("a", "a");
-   ("ab", "aaab");
-   ("ab", "b");
-   ("ab", "c");
-   ("+", "");
-   ("+a", "");
-   ("+a", "a");
-   ("+ab", "aaab");
-   ("+ab", "b");
-   ("+ab", "c");
-   ("*", "");
-   ("*a", "");
-   ("*a", "a");
-   ("*ab", "aaab");
-   ("*ab", "b");
-   ("*ab", "c");
-   ("?", "");
-   ("?a", "");
-   ("?a", "a");
-   ("?ab", "aaab");
-   ("?ab", "b");
-   ("?ab", "c")]
+  [("", "", true);
+   ("a", "", true);
+   ("a", "a", true);
+   ("ab", "aaab", true);
+   ("ab", "b", true);
+   ("ab", "c", true);
+   ("+", "", true);
+   ("+a", "", true);
+   ("+a", "a", true);
+   ("+ab", "aaab", true);
+   ("+ab", "b", true);
+   ("+ab", "c", true);
+   ("*", "", true);
+   ("*a", "", true);
+   ("*a", "a", true);
+   ("*ab", "aaab", true);
+   ("*ab", "b", true);
+   ("*ab", "c", true);
+   ("?", "", true);
+   ("?a", "", true);
+   ("?a", "a", true);
+   ("?ab", "aaab", true);
+   ("?ab", "b", true);
+   ("?ab", "c", true);
+   ("\\a", "a", true);
+   ("\\\\", "\\", true);
+   ("\\?", "?", true);
+   ("\\+", "+", true);
+   ("\\*", "*", true)]
 
 let _ =
   List.iter
-    (fun (pattern, str) ->
-       Printf.printf "Pattern %-10sString %-10s%-10b\n"
-       pattern str (search pattern str))
+    (fun (pattern, str, expected) ->
+       let result = search pattern str in
+       Printf.printf "Pattern %-10sString %-10s Expected %-14b   Actual %-14b   Correct %-14b\n"
+       pattern str expected result (expected = result))
     tests
 
 (* Exercises *)
