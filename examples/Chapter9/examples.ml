@@ -80,37 +80,47 @@ let search = search' 0
 + : one or more matches of the next character
 \ : escape *)
 
+(* Returns the number of characters, zero or more, equal to 'ch' in ss starting
+ * at sp *)
+let swallow_all ch ss sp =
+  let p = ref sp in
+    while !p < String.length ss && ss.[!p] = ch do p := !p + 1 done;
+    !p
+
 let rec at ss ssp s sp l =
-  Printf.printf "\nssp = %i, sp = %i, l = %i\n" ssp sp l;
+  (*Printf.printf "\nssp = %i, sp = %i, l = %i\n" ssp sp l;*)
   l = 0 ||
     let matched, jump_ss, jump_s, jump_l =
       match ss.[ssp] with
          '?' ->
-           (* ? is at the end of the pattern - no match *)
-           if ssp + 1 > String.length ss - 1 then (print_string "A"; (false, 0, 0, l))
-           (* There is no character in the string left to match *)
-           else if sp + 1 > String.length s - 1 then (print_string "B"; (true, 0, 0, l))
-           (* Test the character. It is there.. *)
-           else if ss.[ssp + 1] = s.[sp] then (print_string "C"; (true, 2, 1, 2))
-           (* It is not there. Zero occurances *)
-           else (print_string "D"; (true, 2, 0, 2))
-       | '*' -> ('*' = s.[sp], 1, 1, 1)
-       | '+' -> ('+' = s.[sp], 1, 1, 1)
+           if ssp + 1 > String.length ss - 1 then (false, 0, 0, l) (* ? at end of pattern *)
+           else if sp > String.length s - 1 then (true, 0, 0, l) (* No char left to match *)
+           else if ss.[ssp + 1] = s.[sp] then (true, 2, 1, 2) (* match *)
+           else (true, 2, 0, 2) (* no match *)
+       | '*' -> 
+           if ssp + 1 > String.length ss - 1 then (false, 0, 0, l) else (* * at end of pattern *)
+             let n = swallow_all ss.[ssp + 1] ss sp in (true, 2, n, 2) (* read zero or more items *)
+       | '+' ->
+           if ssp + 1 > String.length ss - 1 then (false, 0, 0, l) (* + at end of pattern *)
+           else if sp > String.length s - 1 then (false, 0, 0, l) (* Nothing left to match *)
+           else if ss.[ssp + 1] = s.[sp] then
+             let n = swallow_all ss.[ssp + 1] ss sp in (true, 2, n, 2) (* read one or more items *)
+           else (false, 0, 0, l) (* did not match *)
        | '\\' ->
            (* Next character to be taken literally *)
-           print_string "F";
            let matched =
              (sp < String.length s &&
               ssp < String.length ss - 1 &&
               ss.[ssp + 1] = s.[sp])
            in
              (matched, 2, 1, 2)
-       | c -> (print_string "E"; (sp < String.length s && c = s.[sp], 1, 1, 1))
+       | c -> (sp < String.length s && c = s.[sp], 1, 1, 1)
     in
       matched && at ss (ssp + jump_ss) s (sp + jump_s) (l - jump_l)
 
 let rec search' n ss s =
-  n < String.length s &&
+  Printf.printf "\nsearch' %i\n" n;
+  n <= String.length s &&
   (at ss 0 s n (String.length ss) || search' (n + 1) ss s)
 
 let search = search' 0
