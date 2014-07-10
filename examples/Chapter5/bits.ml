@@ -111,6 +111,11 @@ let putval o v l =
     putbit o (v land (1 lsl x))
   done
 
+let putval_32 o v l =
+  for x = l - 1 downto 0 do
+    putbit o (Int32.to_int (Int32.logand v (Int32.shift_left 1l x)))
+  done
+
 (* Output bit streams example. *)
 let output_header filename =
   let ch = open_out_bin filename in
@@ -118,8 +123,8 @@ let output_header filename =
   let bits = output_bits_of_output o in
     putval bits 110 16;
     putval bits 1183 16;
-    putval bits 1952181922 32;
-    putval bits 1503264782 32;
+    putval_32 bits 1952181922l 32;
+    putval_32 bits 1503264782l 32;
     putval bits 5 4;
     putval bits 0 6;
     putbit bits 0;
