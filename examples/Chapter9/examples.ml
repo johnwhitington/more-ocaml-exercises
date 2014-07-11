@@ -88,11 +88,11 @@ let swallow_all ch ss sp =
     !p
 
 let rec at ss ssp s sp =
-  (*Printf.printf "\nssp = %i, sp = %i" ssp sp;*)
-  ssp > String.length ss - 1 ||
+  ssp > String.length ss - 1 || (* used whole pattern *)
+  String.length ss = 0 || (* pattern is empty -- trivial match *)
     match
       match ss.[ssp] with
-         '?' ->
+       | '?' ->
            if ssp + 1 > String.length ss - 1 then None (* ? at end of pattern *)
            else if sp > String.length s - 1 then Some (String.length ss - ssp, 0) (* No char left to match *)
            else if ss.[ssp + 1] = s.[sp] then Some (2, 1) (* match *)
@@ -114,41 +114,42 @@ let rec at ss ssp s sp =
            in
              if matched then Some (2, 1) else None
        | c ->
-           if sp < String.length s && c = s.[sp] then None else Some (1, 1)
+           if sp < String.length s && c = s.[sp] then Some (1, 1) else None
     with
       None -> false
     | Some (jump_ss, jump_s) -> at ss (ssp + jump_ss) s (sp + jump_s)
 
 let rec search' n ss s =
-  n <= String.length s && (at ss 0 s n || search' (n + 1) ss s)
+  (n < String.length s || n = 0 && String.length s = 0) &&
+  (at ss 0 s n || search' (n + 1) ss s)
 
 let search = search' 0
 
 let tests = 
   [("", "", true);
-   ("a", "", true);
+   ("a", "", false);
    ("a", "a", true);
    ("ab", "aaab", true);
-   ("ab", "b", true);
-   ("ab", "c", true);
-   ("+", "", true);
-   ("+a", "", true);
+   ("ab", "b", false);
+   ("ab", "c", false);
+   ("+", "", false); (* bad pattern *)
+   ("+a", "", false);
    ("+a", "a", true);
    ("+ab", "aaab", true);
-   ("+ab", "b", true);
-   ("+ab", "c", true);
-   ("*", "", true);
+   ("+ab", "b", false);
+   ("+ab", "c", false);
+   ("*", "", false); (* bad pattern *)
    ("*a", "", true);
    ("*a", "a", true);
    ("*ab", "aaab", true);
    ("*ab", "b", true);
-   ("*ab", "c", true);
-   ("?", "", true);
+   ("*ab", "c", false);
+   ("?", "", false); (* bad pattern *)
    ("?a", "", true);
    ("?a", "a", true);
    ("?ab", "aaab", true);
    ("?ab", "b", true);
-   ("?ab", "c", true);
+   ("?ab", "c", false);
    ("\\a", "a", true);
    ("\\\\", "\\", true);
    ("\\?", "?", true);
