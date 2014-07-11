@@ -94,7 +94,7 @@ let rec at ss ssp s sp =
       match ss.[ssp] with
        | '?' ->
            if ssp + 1 > String.length ss - 1 then None (* ? at end of pattern *)
-           else if sp > String.length s - 1 then Some (String.length ss - ssp, 0) (* No char left to match *)
+           else if sp > String.length s - 1 then Some (2, 0) (* No char left to match *)
            else if ss.[ssp + 1] = s.[sp] then Some (2, 1) (* match *)
            else Some (2, 0) (* no match *)
        | '*' -> 
@@ -146,6 +146,7 @@ let tests =
    ("*ab", "c", false);
    ("?", "", false); (* bad pattern *)
    ("?a", "", true);
+   ("?ab", "", false);
    ("?a", "a", true);
    ("?ab", "aaab", true);
    ("?ab", "b", true);
