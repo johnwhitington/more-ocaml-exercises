@@ -89,7 +89,6 @@ let swallow_all ch ss sp =
 
 let rec at ss ssp s sp =
   ssp > String.length ss - 1 || (* used whole pattern *)
-  String.length ss = 0 || (* pattern is empty -- trivial match *)
     match
       match ss.[ssp] with
        | '?' ->
@@ -234,9 +233,9 @@ let profile f =
     done;
     Unix.gettimeofday () -. t
 
-let _ =
+(*let _ =
   Printf.printf "Naive version took %f seconds\n" (profile search_naive);
-  Printf.printf "Better version tool %f seconds\n" (profile search_better)
+  Printf.printf "Better version tool %f seconds\n" (profile search_better) *)
 
 (* 5. Case-insensitive search *)
 let search ?(nocase = false) ss s =
