@@ -28,7 +28,7 @@ let rec interleave acc h l ls =
   | x::xs -> interleave ((l @ (h :: x :: xs)) :: acc) h (l @ [x]) xs
 
 let combine x ps =
-  concat (map (interleave [] x []) ps)
+  List.concat (List.map (interleave [] x []) ps)
 
 let rec perms p =
   match p with
@@ -46,9 +46,9 @@ let rec perms l =
   match l with
     [] -> [[]]
   | l ->
-      concat
-        (map
-          (fun x -> map (fun l -> x :: l) (perms (without x l)))
+      List.concat
+        (List.map
+          (fun x -> List.map (fun l -> x :: l) (perms (without x l)))
           l)
 
 (* E. Version which can give the next permutation -- lexicographic permutation *)

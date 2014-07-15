@@ -5,7 +5,7 @@ RESULT = compressed
 
 INCDIRS = ../../../more/ ../../../examples/Chapter4/ ../../../examples/Chapter5/ ../../../examples/pdf/ ../../../examples
 
-LIBS = more input bits pdfmain 
+LIBS = input bits pdfmain 
 
 OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g

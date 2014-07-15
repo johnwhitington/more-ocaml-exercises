@@ -31,8 +31,6 @@ cd -; cd exercises/PDF/textq1; make clean
 cd -; cd exercises/PDF/textq2; make clean
 cd -; cd exercises/PDF/textq3; make clean
 cd -; cd exercises/PDF/textq4; make clean
-cd -; cd exercises/PDF/writingq1; make clean
-cd -; cd exercises/PDF/writingq2; make clean
 cd -; cd exercises/PDF/writingq3; make clean
-cd -; rm -r examples/PDF/doc
+cd -; rm -rf examples/PDF/doc
 

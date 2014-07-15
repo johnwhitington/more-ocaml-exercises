@@ -3,7 +3,7 @@ SOURCES = bits.ml
 
 RESULT = bits
 
-INCDIRS = ../../more/ ../Chapter4/
+INCDIRS = ../Chapter4/
 
 LIBS = input
 

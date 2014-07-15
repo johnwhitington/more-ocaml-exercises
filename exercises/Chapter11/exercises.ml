@@ -160,7 +160,7 @@ let insertion_benchmark str l =
     (fun (n, s) ->
       let module S = (val s : SetType) in
         let t_start = Unix.gettimeofday () in
-          let set = S.set_of_list l in
+          let _ = S.set_of_list l in
             let t_end = Unix.gettimeofday () in
               Printf.printf "Insertion of 50000 %s elements with %s took %f seconds\n%!" str n (t_end -. t_start))
     implementations
@@ -208,7 +208,7 @@ let memory_benchmark l =
     (fun (n, s) ->
       let module S = (val s : SetType) in
         let min, prom, maj = Gc.counters () in
-          let set = S.set_of_list l in
+          let _ = S.set_of_list l in
             let min2, prom2, maj2 = Gc.counters () in
               Printf.printf
                 "Memory used creating set made from %s items is %f \n%!"
