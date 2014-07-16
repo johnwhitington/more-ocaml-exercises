@@ -108,3 +108,5 @@ let change_verbosity vs =
   in
     Gc.set {(Gc.get ()) with Gc.verbose = n}
 
+let _ = write_gc_summary "gc.txt"
+
