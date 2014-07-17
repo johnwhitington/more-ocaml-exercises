@@ -69,3 +69,10 @@ let _ =
   Printf.printf "Naive version took %f seconds\n" (profile search_naive);
   Printf.printf "Better version tool %f seconds\n" (profile search_better)
 
+(* 5. Case-insensitive search *)
+let search ?(nocase = false) ss s =
+  if nocase then
+    search' 0 (String.uppercase ss) (String.uppercase s)
+  else
+    search' 0 ss s
+
