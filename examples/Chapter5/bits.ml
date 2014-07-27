@@ -45,6 +45,8 @@ let getval_32 b n =
         done;
         !r
 
+(* FIXME: Provide an example file! *)
+
 (* Deconstruction of TCP datagram header *)
 let print_header filename =
   let ch = open_in_bin filename in
@@ -52,7 +54,7 @@ let print_header filename =
   let b = input_bits_of_input i in
     let src_port = getval b 16 in
     let dest_port = getval b 16 in
-    let seq_port = getval_32 b 32 in
+    let seq_number = getval_32 b 32 in
     let ack_number = getval_32 b 32 in
     let _ = getval b 4 in (* data offset *)
     let _ = getval b 6 in (* reserved *)
@@ -65,15 +67,27 @@ let print_header filename =
     let receive = getval b 16 in
     let checksum = getval b 16 in
     let urgent_pointer = getval b 16 in
-      Printf.printf
-        "Source port = %i, Destination = %i, Sequence = %li, Acknowledgement Number = %li\n"
-        src_port dest_port seq_port ack_number;
-      Printf.printf
-        "Flags: Urgent = %B, Ack = %B, Push = %B, Reset = %B, Syn = %B, Fin = %B\n"
-        urgent ack push reset syn fin;
-      Printf.printf
-        "Receive window size = %i, checksum = %i, urgent pointer = %i\n"
-        receive checksum urgent_pointer;
+      print_string "\nSource port = ";
+      print_int src_port;
+      print_string "\nDestination = ";
+      print_int dest_port;
+      print_string "\nSequence =";
+      print_string (Int32.to_string seq_number);
+      print_string "\nAcknowledgement Number = ";
+      print_string (Int32.to_string ack_number);
+      let print_bool b = print_string (string_of_bool b) in
+      print_string "\nFlags:\n Urgent = "; print_bool urgent;
+      print_string "\nAck = "; print_bool ack;
+      print_string "\nPush = "; print_bool push;
+      print_string "\nReset = "; print_bool reset;
+      print_string "\nSyn = "; print_bool syn;
+      print_string "\nFin = "; print_bool fin;
+      print_string "Receive window size = ";
+      print_int receive;
+      print_string "\nChecksum = ";
+      print_int checksum;
+      print_string "\nUrgent pointer = ";
+      print_int urgent_pointer;
       close_in ch
        
 (* Output bit streams *)
