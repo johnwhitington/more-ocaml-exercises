@@ -67,29 +67,32 @@ let print_header filename =
     let receive = getval b 16 in
     let checksum = getval b 16 in
     let urgent_pointer = getval b 16 in
-      print_string "\nSource port = ";
+      print_string "Source port = ";
       print_int src_port;
       print_string "\nDestination = ";
       print_int dest_port;
-      print_string "\nSequence =";
+      print_string "\nSequence = ";
       print_string (Int32.to_string seq_number);
       print_string "\nAcknowledgement Number = ";
       print_string (Int32.to_string ack_number);
       let print_bool b = print_string (string_of_bool b) in
       print_string "\nFlags:\n Urgent = "; print_bool urgent;
-      print_string "\nAck = "; print_bool ack;
-      print_string "\nPush = "; print_bool push;
-      print_string "\nReset = "; print_bool reset;
-      print_string "\nSyn = "; print_bool syn;
-      print_string "\nFin = "; print_bool fin;
-      print_string "Receive window size = ";
+      print_string "\n Ack = "; print_bool ack;
+      print_string "\n Push = "; print_bool push;
+      print_string "\n Reset = "; print_bool reset;
+      print_string "\n Syn = "; print_bool syn;
+      print_string "\n Fin = "; print_bool fin;
+      print_string "\nReceive window size = ";
       print_int receive;
       print_string "\nChecksum = ";
       print_int checksum;
       print_string "\nUrgent pointer = ";
       print_int urgent_pointer;
+      print_string "\n";
       close_in ch
-       
+
+let _ = print_header "packet.bin"
+
 (* Output bit streams *)
 type output_bits =
   {output : output; (* underlying output *)
