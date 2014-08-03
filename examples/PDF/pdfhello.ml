@@ -170,3 +170,44 @@ let graph =
         ("/Root", Pdf.Indirect 2);
         ("/ID", Pdf.Array [Pdf.String "FIXME"; Pdf.String "FIXME"])]}
 
+(* Consider the tree Br (Br (Lf, 1, Lf), 2, Br (Lf, 3, Lf)). We will represent it as:
+
+  <</Type /Br
+    /Value 2
+    /Left
+       <</Type /Br /Value 1 /Left /Lf /Right /Lf>>
+    /Right
+      << /Type /Br /Value 3 /Left /Lf /Right /Lf>> 
+  >>
+*)
+let tree =
+  Pdf.Dictionary
+    [("/Type", Pdf.Name "/Br");
+     ("/Value", Pdf.Integer 2);
+     ("/Left",
+        Pdf.Dictionary
+          [("/Type", Pdf.Name "/Br");
+           ("/Value", Pdf.Integer 1);
+           ("/Left", Pdf.Name "/Lf");
+           ("/Right", Pdf.Name "/Lf")]);
+     ("/Right",
+         Pdf.Dictionary
+           [("/Type", Pdf.Name "/Br");
+            ("/Value", Pdf.Integer 3);
+            ("/Left", Pdf.Name "/Lf");
+            ("/Right", Pdf.Name "/Lf")])]
+
+let rec rotate_90 obj =
+  match obj with
+    Pdf.Array objs -> Pdf.Array (List.map rotate_90 objs)
+  | Pdf.Dictionary objs -> Pdf.Dictionary (List.map rotate_90_dict objs)
+  | Pdf.Stream (dict, str) -> Pdf.Stream (rotate_90 dict, str)
+  | x -> x 
+
+and rotate_90_dict (k, v)  =
+  match k with
+    "/Rotate" -> ("/Rotate", Pdf.Integer 90)
+  | _ -> (k, v)
+
+
+
