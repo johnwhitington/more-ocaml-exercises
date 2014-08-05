@@ -42,7 +42,7 @@ let tree_inorder t   = fold_tree (fun x l r -> l @ [x] @ r) [] t
 
 let tree_postorder t = fold_tree (fun x l r -> l @ r @ [x]) [] t
 
-let map f l = List.fold_right (fun a e -> f e :: a) l
+let map f l = List.fold_right (fun e a -> f e :: a) l []
 
 let fold_right f l e =
   List.fold_left (fun x y -> f y x) e (List.rev l)
