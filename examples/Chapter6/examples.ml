@@ -93,7 +93,11 @@ let compress_string = process compress
 
 let example = "((5.000000, 4.583333), (4.500000,5.000000))"
 
+
+
+
 (* CCITT Fax Group 3 Encoding *)
+
 let getbitint b =
   if getbit b then 1 else 0
   
@@ -132,8 +136,6 @@ let putval o v l =
     putbitint o (v land (1 lsl x))
   done
 
-let e = "((5.000000, 4.583333), (4.500000,5.000000))"
-
 let width = 80
 
 let input_data =
@@ -159,8 +161,24 @@ let input_data =
  00000000000000000000000000000000000000000000000000000000000000000000000000000000\
  00000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
-let text = "1010101010"
+(* Convert the example string to a string containing just the bits, padded with
+ * zeroes to a full byte. *)
+let packedstring_of_string s =
+  let b = Buffer.create (String.length s / 8 + 1) in
+  let o = output_bits_of_output (output_of_buffer b) in
+    for x = 0 to String.length s - 1 do putbit o (s.[x] = '1') done;
+    flush o;
+    Buffer.contents b
 
+let print_packedstring w s =
+  let ibits = input_bits_of_input (input_of_string s) in
+    try
+      while true do
+        for column = 1 to w do print_int (getbitint ibits) done;
+        print_newline ()
+      done
+    with
+      End_of_file -> ()
 
 let white_terminating_codes =
   [|[0; 0; 1; 1; 0; 1; 0; 1]; 
@@ -367,32 +385,13 @@ let rec code isblack length =
         then black_terminating_codes.(length)
         else white_terminating_codes.(length)
 
-(* Convert the example string to a string containing just the bits, padded with
- * zeroes to a full byte. *)
-let packedstring_of_string s =
-  let b = Buffer.create (String.length s / 8 + 1) in
-  let o = output_bits_of_output (output_of_buffer b) in
-    for x = 0 to String.length s - 1 do putbit o (s.[x] = '1') done;
-    flush o;
-    Buffer.contents b
-
-let print_packedstring w s =
-  let ibits = input_bits_of_input (input_of_string s) in
-    try
-      while true do
-        for column = 1 to w do print_int (getbitint ibits) done;
-        print_newline ()
-      done
-    with
-      End_of_file -> ()
-
 (* Given input and output bitstreams and width and height, encode using CCITT
  * group 3 fax. There must be (w * h) bits in the input. *)
 let rec read_up_to v i n w =
   if n >= w then (n, v) else
-    match peekbit i with
-      x when x = v -> (ignore (getbit i)); read_up_to v i (n + 1) w
-    | x -> (n, v)
+    if peekbit i = v
+      then (ignore (getbit i); read_up_to v i (n + 1) w)
+      else (n, v)
 
 let encode_fax i o w h =
   let rec encode_fax_line i o w =
@@ -405,6 +404,21 @@ let encode_fax i o w h =
       if peekbit i then List.iter (putbitint o) (code true 0);
       encode_fax_line i o w
     done
+
+let process f s w h = 
+  let b = Buffer.create (String.length s) in
+  let ibits = input_bits_of_input (input_of_string s) in
+  let obits = output_bits_of_output (output_of_buffer b) in
+    f ibits obits w h;
+    flush obits;
+    Buffer.contents b
+
+let compress_string_ccitt = process encode_fax
+
+
+
+
+(* Fax decompression *)
 
 let rec read_white_code i =
   let a = getbitint i in
@@ -670,27 +684,18 @@ let decode_fax i o w h =
       lines := !lines - 1
     done
 
-let process f s w h = 
-  let b = Buffer.create (String.length s) in
-  let ibits = input_bits_of_input (input_of_string s) in
-  let obits = output_bits_of_output (output_of_buffer b) in
-    f ibits obits w h;
-    flush obits;
-    Buffer.contents b
-
 let decompress_string_ccitt = process decode_fax
 
-let compress_string_ccitt = process encode_fax
 
-(*open Compression;;
+(*open Examples;;
 
 let p = packedstring_of_string input_data;;
 
-let c = compress_string p 80 21;;
+let c = compress_string_ccitt p 80 21;;
 
 print_packedstring max_int c;;
 
-let d = decompress_string c 80 21;;
+let d = decompress_string_ccitt c 80 21;; (* FAILS: bad white code -- fix *)
 
 print_packedstring 80 d;;*)
 
