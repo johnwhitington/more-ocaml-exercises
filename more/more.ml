@@ -18,15 +18,21 @@ module List :
     let map f l =
       List.rev (List.rev_map f l)
 
-    (* FIXME. Add map2, and make both tail-recursive *)
-    let rec map3 f l l2 l3 =
-      match l, l2, l3 with
-       [], [], [] -> []
-      | x::xs, y::ys, z::zs -> f x y z :: map3 f xs ys zs
-      | _ -> raise (Invalid_argument "map3")
+    let rev_map2 f l l2 =
+      let rec rev_map_inner acc a b =
+        match a, b with
+          [], [] -> acc
+        | x::xs, y::ys -> rev_map_inner (f x y :: acc) xs ys
+        | _ -> raise (Invalid_argument "List.map2")
+      in
+        rev_map_inner [] l l2
+
+    let map2 f l l2 =
+      List.rev (rev_map2 f l l2)
 
     let concat lists =
-      let rec concat out = function
+      let rec concat out acc =
+        match acc with
         | [] -> out
         | l::ls -> concat (append l out) ls
       in
@@ -56,18 +62,19 @@ module Util :
       let rec take_inner r l n =
         if n = 0 then List.rev r else
           match l with
-          | [] -> raise (Invalid_argument "take")
-          | h::t -> take_inner (h::r) t (n - 1)
+            [] -> raise (Invalid_argument "take")
+          | h::t -> take_inner (h :: r) t (n - 1)
       in
         take_inner [] l n
 
-    let rec drop_inner n = function
-      | [] -> raise (Invalid_argument "drop")
-      | _::t -> if n = 1 then t else drop_inner (n - 1) t
-
     let drop l n =
-      if n < 0 then raise (Invalid_argument "drop") else
-      if n = 0 then l else
-        drop_inner n l
+      let rec drop_inner n l =
+        match l with
+          [] -> raise (Invalid_argument "drop")
+        | _::t -> if n = 1 then t else drop_inner (n - 1) t
+      in
+        if n < 0 then raise (Invalid_argument "drop") else
+        if n = 0 then l else
+          drop_inner n l
   end
 
