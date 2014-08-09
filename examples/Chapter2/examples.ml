@@ -1,10 +1,5 @@
 type 'a lazylist = Cons of 'a * (unit -> 'a lazylist)
 
-let rec lzero = 
-  Cons (0, fun () -> lzero)
-
-let rec lconst n = Cons (n, fun () -> lconst n)
-
 let rec lseq n =
   Cons (n, fun () -> lseq (n + 1))
 
@@ -36,17 +31,24 @@ let cubes =
     (fun x -> x mod 5 = 0)
     (lmap (fun x -> x * x * x) (lseq 1))
 
-let rec primes_inner (Cons (h, tf)) =
-  Cons (h, fun () -> primes_inner (lfilter (fun x -> x mod h <> 0) (tf ())))
+let rec mkprimes (Cons (h, tf)) =
+  Cons (h, fun () ->
+    mkprimes (lfilter (fun x -> x mod h <> 0) (tf ())))
 
-let primes = primes_inner (lseq 2)
+let primes = mkprimes (lseq 2)
 
 let rec interleave (Cons (h, tf)) l =
   Cons (h, fun () -> interleave l (tf ()))
 
+let rec lconst n =
+  Cons (n, fun () -> lconst n)
+
+let interleaved =
+  interleave (lconst 0) (lconst 1)
+
 let rec allfrom l =
-  Cons (l, fun () -> interleave (allfrom (0::l)) (allfrom (1::l)))
+  Cons (l, fun () ->
+    interleave (allfrom (0 :: l)) (allfrom (1 :: l)))
 
 let allones = allfrom []
-
 

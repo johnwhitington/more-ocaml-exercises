@@ -1,4 +1,4 @@
-(* Bit streams *)
+(* Open the 'input' module from Chapter 4 *)
 open Input
 
 type input_bits =
@@ -7,9 +7,9 @@ type input_bits =
    mutable bit : int}
 
 let input_bits_of_input i =
-  {byte = 0;
-   bit = 0;
-   input = i}
+  {input = i;
+   byte = 0;
+   bit = 0}
 
 let rec getbit b =
   if b.bit = 0 then
@@ -36,16 +36,16 @@ let getval b n =
       done;
       !r
 
+(* This function is one of the exercises. Do not peek! *)
 let getval_32 b n =
-  if n < 0 then raise (Invalid_argument "getval_32") else
-    if n = 0 then 0l else
-      let r = ref Int32.zero in
-        for x = n - 1 downto 0 do
-          r := Int32.logor !r (Int32.shift_left (Int32.of_int ((if getbit b then 1 else 0))) x)
-        done;
-        !r
-
-(* FIXME: Provide an example file! *)
+  if n < 0 then raise (Invalid_argument "getval_32")
+  else if n = 0 then 0l
+  else
+    let r = ref Int32.zero in
+      for x = n - 1 downto 0 do
+        r := Int32.logor !r (Int32.shift_left (Int32.of_int (if getbit b then 1 else 0)) x)
+      done;
+      !r
 
 (* Deconstruction of TCP datagram header *)
 let print_header filename =
@@ -67,7 +67,7 @@ let print_header filename =
     let receive = getval b 16 in
     let checksum = getval b 16 in
     let urgent_pointer = getval b 16 in
-      print_string "Source port = ";
+      print_string "\nSource port = ";
       print_int src_port;
       print_string "\nDestination = ";
       print_int dest_port;
@@ -76,31 +76,31 @@ let print_header filename =
       print_string "\nAcknowledgement Number = ";
       print_string (Int32.to_string ack_number);
       let print_bool b = print_string (string_of_bool b) in
-      print_string "\nFlags:\n Urgent = "; print_bool urgent;
-      print_string "\n Ack = "; print_bool ack;
-      print_string "\n Push = "; print_bool push;
-      print_string "\n Reset = "; print_bool reset;
-      print_string "\n Syn = "; print_bool syn;
-      print_string "\n Fin = "; print_bool fin;
-      print_string "\nReceive window size = ";
-      print_int receive;
-      print_string "\nChecksum = ";
-      print_int checksum;
-      print_string "\nUrgent pointer = ";
-      print_int urgent_pointer;
-      print_string "\n";
-      close_in ch
+        print_string "\nFlags:\n Urgent = "; print_bool urgent;
+        print_string "\n Ack = "; print_bool ack;
+        print_string "\n Push = "; print_bool push;
+        print_string "\n Reset = "; print_bool reset;
+        print_string "\n Syn = "; print_bool syn;
+        print_string "\n Fin = "; print_bool fin;
+        print_string "\nReceive window size = ";
+        print_int receive;
+        print_string "\nChecksum = ";
+        print_int checksum;
+        print_string "\nUrgent pointer = ";
+        print_int urgent_pointer;
+        print_string "\n";
+        close_in ch
 
-let _ = print_header "packet.bin"
+(* let _ = print_header "packet.bin" *)
 
 (* Output bit streams *)
 type output_bits =
-  {output : output; (* underlying output *)
-   mutable obyte : int; (* the byte we're building up *)
+  {output : output;
+   mutable obyte : int;
    mutable obit : int}
 
-let output_bits_of_output output =
-  {output;
+let output_bits_of_output o =
+  {output = o;
    obyte = 0;
    obit = 0}
 
@@ -128,6 +128,7 @@ let putval o v l =
     putbit o (v land (1 lsl x))
   done
 
+(* This function is one of the exercises. Do not peek! *)
 let putval_32 o v l =
   for x = l - 1 downto 0 do
     putbit o (Int32.to_int (Int32.logand v (Int32.shift_left 1l x)))
@@ -138,19 +139,23 @@ let output_header filename =
   let ch = open_out_bin filename in
   let o = output_of_channel ch in
   let bits = output_bits_of_output o in
-    putval bits 110 16;
-    putval bits 1183 16;
-    putval_32 bits 1952181922l 32;
-    putval_32 bits 1503264782l 32;
+    putval bits 38 16;
+    putval bits 47892 16;
+    putval_32 bits 1656212531l 32;
+    putval_32 bits 1481973485l 32;
     putval bits 5 4;
     putval bits 0 6;
     putbit bits 0;
-    putbit bits 1;
-    putbit bits 1;
     putbit bits 0;
     putbit bits 0;
     putbit bits 0;
-    putval bits 9216 16;
-    putval bits 58154 16;
-    putval bits 0 16;
+    putbit bits 0;
+    putbit bits 0;
+    putval bits 17664 16;
+    putval bits 888 16;
+    putval bits 63404 16;
     close_out ch
+
+(* let _ =
+  output_header "packet_out.bin" *)
+

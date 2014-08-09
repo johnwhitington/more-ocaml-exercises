@@ -2,10 +2,6 @@ open More
 open Input
 open Bits
 
-let output_of_buffer b =
-  {output_char = Buffer.add_char b;
-   out_channel_length = fun () -> Buffer.length b}
-
 let string_of_int_list l =
   let s = String.create (List.length l) in
     List.iteri (fun n x -> s.[n] <- char_of_int x) l;
@@ -18,11 +14,35 @@ let int_list_of_string s =
     done;
     !l
 
+let output_of_buffer b =
+  {output_char = Buffer.add_char b;
+   out_channel_length = fun () -> Buffer.length b}
+
 (* Run Length Encoding *)
 let process f s =
   let b = Buffer.create (String.length s) in
     f (input_of_string s) (output_of_buffer b);
     Buffer.contents b
+
+(* Byte-by-byte decompression *)
+
+exception EOD
+
+let decompress i o =
+  try
+    while true do
+      match int_of_char (i.input_char ()) with
+        x when x >= 0 && x <= 127 ->
+          for p = 1 to x + 1 do o.output_char (i.input_char ()) done
+      | x when x > 128 && x <= 255 ->
+          let c = i.input_char () in
+            for p = 1 to 257 - x do o.output_char c done
+      | _ -> raise EOD
+    done
+  with
+    EOD -> ()
+
+let decompress_string = process decompress
 
 (* Return the run (of length 1 to 128) of like characters as (byte, count).
  * Raises End_of_file if already at end of file. *)
@@ -30,7 +50,9 @@ let getsame i =
   let rec getcount ch c =
     if c = 128 then 128 else
       try
-        if i.input_char () = ch then getcount ch (c + 1) else (rewind i; c)
+        if i.input_char () = ch
+          then getcount ch (c + 1)
+          else (rewind i; c)
       with
         End_of_file -> c
   in
@@ -67,27 +89,9 @@ let compress i o =
   with
     End_of_file -> o.output_char (char_of_int 128)
 
-exception EOD
-
-let decompress i o =
-  try
-    while true do
-      match int_of_char (i.input_char ()) with
-        x when x >= 0 && x <= 127 ->
-          for p = 1 to x + 1 do o.output_char (i.input_char ()) done
-      | x when x > 128 && x <= 255 ->
-          let c = i.input_char () in
-            for p = 1 to 257 - x do o.output_char c done
-      | _ -> raise EOD
-    done
-  with
-    EOD -> ()
-
 let compress_string = process compress
 
-let decompress_string = process decompress
-
-let testinput = int_list_of_string "cooooooooooompressssssss me!"
+let example = "((5.000000, 4.583333), (4.500000,5.000000))"
 
 (* CCITT Fax Group 3 Encoding *)
 let getbitint b =
@@ -674,9 +678,9 @@ let process f s w h =
     flush obits;
     Buffer.contents b
 
-let decompress_string = process decode_fax
+let decompress_string_ccitt = process decode_fax
 
-let compress_string = process encode_fax
+let compress_string_ccitt = process encode_fax
 
 (*open Compression;;
 

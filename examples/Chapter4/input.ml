@@ -15,7 +15,8 @@ let input_of_string s =
     {pos_in = (fun () -> !pos);
      seek_in =
        (fun p ->
-          if p < 0 then raise (Invalid_argument "seek before beginning");
+          if p < 0 then
+            raise (Invalid_argument "seek before beginning");
           pos := p);
      input_char =
        (fun () ->
@@ -24,18 +25,19 @@ let input_of_string s =
            else (let c = s.[!pos] in pos := !pos + 1; c));
      in_channel_length = String.length s}
 
-(* Read words *)
+(* Example : reading words *)
+let example = "There were four of them; more than before."
 
 let rewind i =
   i.seek_in (i.pos_in () - 1)
 
-let is_whitespace x =
+let is_non_letter x =
   match x with
     ' ' | '!' | '(' | ')' | '.' | ',' | ';' | ':' -> true
   | _ -> false
 
 let rec skip_characters i =
-  if is_whitespace (i.input_char ())
+  if is_non_letter (i.input_char ())
     then skip_characters i
     else rewind i
 
@@ -45,7 +47,7 @@ let rec collect_characters b i =
   with
     None -> Buffer.contents b
   | Some c -> 
-    if is_whitespace c
+    if is_non_letter c
       then Buffer.contents b
       else (Buffer.add_char b c; collect_characters b i)
 
@@ -63,6 +65,12 @@ let rec read_words_inner i a =
 
 let read_words i =
   read_words_inner i []
+
+let _ =
+  print_endline "Words read:";
+  List.iter print_endline (read_words (input_of_string example))
+
+(* A type for outputs *)
 
 type output =
   {output_char : char -> unit;
@@ -92,4 +100,8 @@ let output_int_list o ls =
     ls;
   o.output_char ']'
 
+let _ =
+  print_endline "Using output_int_list:";
+  output_int_list (output_of_channel stdout) [1; 2; 3; 4; 5];
+  print_endline ""
 
