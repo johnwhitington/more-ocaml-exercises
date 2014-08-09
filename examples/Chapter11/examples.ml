@@ -19,7 +19,7 @@ module SetList : sig include SetType end =
 
     let insert x l =
       if List.mem x l then l else x :: l
-    
+
     let rec set_of_list l =
       match l with [] -> [] | h::t -> insert h (set_of_list t)
 
@@ -30,9 +30,7 @@ module SetList : sig include SetType end =
 
 module SetTree : sig include SetType end =
   struct
-    type 'a t =
-      Lf
-    | Br of 'a t * 'a * 'a t
+    type 'a t = Lf | Br of 'a t * 'a * 'a t
 
     let rec list_of_set s =
       match s with
@@ -61,8 +59,7 @@ module SetTree : sig include SetType end =
       match s with
         Lf -> false
       | Br (_, y, _) when x = y -> true
-      | Br (l, y, r) ->
-          if x < y then member x l else member x r
+      | Br (l, y, r) -> if x < y then member x l else member x r
   end
 
 module SetRedBlack : sig include SetType end =
@@ -78,8 +75,8 @@ module SetRedBlack : sig include SetType end =
         Lf -> []
       | Br (_, l, x, r) -> x :: list_of_set l @ list_of_set r
 
-    let balance n =
-      match n with
+    let balance t =
+      match t with
         (B, Br (R, Br (R, a, x, b), y, c), z, d)
       | (B, Br (R, a, x, Br (R, b, y, c)), z, d)
       | (B, a, x, Br (R, Br (R, b, y, c), z, d))
@@ -87,17 +84,17 @@ module SetRedBlack : sig include SetType end =
           Br (R, Br (B, a, x, b), y, Br (B, c, z, d))
       | (a, b, c, d) -> Br (a, b, c, d)
 
-    let rec add_inner x s =
+    let rec insert_inner x s =
       match s with
         Lf -> Br (R, Lf, x, Lf)
       | Br (c, l, y, r) ->
           if x < y
-            then balance (c, add_inner x l, y, r)
-            else if x > y then balance (c, l, y, add_inner x r)
+            then balance (c, insert_inner x l, y, r)
+            else if x > y then balance (c, l, y, insert_inner x r)
             else Br (c, l, y, r)
 
     let insert x s =
-      match add_inner x s with
+      match insert_inner x s with
         Br (_, l, y, r) -> Br (B, l, y, r)
       | Lf -> assert false
 
@@ -140,19 +137,21 @@ module SetHashtbl : sig include SetType end =
     let size = Hashtbl.length
   end
 
+
+(* Numbers from 1 to 50000 *)
 let nums = Util.from 1 50000
 
+(* 50000 pseudorandom numbers between 0 and 1073741823 *)
 let rand = Array.to_list (Array.init 50000 (fun _ -> Random.int 1073741823))
 
 
-(* Build modules for each using first class modules *)
+(* Build modules for each using first class modules syntax not discussed in the
+ * text. *)
 let implementations =
   [("Lists", (module SetList : SetType));
    ("Trees", (module SetTree : SetType));
    ("Red-black trees", (module SetRedBlack : SetType));
    ("Hash tables", (module SetHashtbl : SetType))]
-
-(* FIXME Combine these four functions into something generic *)
 
 (* Insert items into a set *)
 let insertion_benchmark str l =
@@ -162,7 +161,9 @@ let insertion_benchmark str l =
         let t_start = Unix.gettimeofday () in
           let _ = S.set_of_list l in
             let t_end = Unix.gettimeofday () in
-              Printf.printf "Insertion of 50000 %s elements with %s took %f seconds\n%!" str n (t_end -. t_start))
+              Printf.printf
+                "Insertion of 50000 %s elements with %s took %f seconds\n%!"
+                str n (t_end -. t_start))
     implementations
 
 (* Test membership of all items in a set, once populated with them *)
@@ -174,7 +175,9 @@ let membership_benchmark str l =
           let t_start = Unix.gettimeofday () in
           List.iter (fun x -> ignore (S.member x set)) nums;
           let t_end = Unix.gettimeofday () in
-            Printf.printf "Membership in a set made from %s items with %s took %f seconds\n%!" str n (t_end -. t_start))
+            Printf.printf
+              "Membership in a set made from %s items with %s took %f seconds\n%!"
+              str n (t_end -. t_start))
     implementations
 
 (* Return a list of all items in a set *)
@@ -186,7 +189,9 @@ let elements_benchmark str l =
           let t_start = Unix.gettimeofday () in
           ignore (S.list_of_set set);
           let t_end = Unix.gettimeofday () in
-            Printf.printf "Elements of a set made from %s items with %s took %f seconds\n%!" str n (t_end -. t_start))
+            Printf.printf
+              "Elements of a set made from %s items with %s took %f seconds\n%!"
+              str n (t_end -. t_start))
     implementations
 
 (* Find the size of a set *)
@@ -198,8 +203,12 @@ let size_benchmark str l =
           let t_start = Unix.gettimeofday () in
           ignore (S.size set);
           let t_end = Unix.gettimeofday () in
-            Printf.printf "Size of a set made from %s items with %s took %f seconds\n%!" str n (t_end -. t_start))
+            Printf.printf
+              "Size of a set made from %s items with %s took %f seconds\n%!"
+              str n (t_end -. t_start))
     implementations
+
+(* FIXME: Should be in exercises... *)
 
 (* Find how much memory is used by inserting 50000 random elements into a set
  * in each set representation *)
@@ -215,8 +224,8 @@ let memory_benchmark l =
                 n ((min2 +. maj2 -. prom2) -. (min +. maj -. prom)))
     implementations
 
-let _ =
-  (*insertion_benchmark "ordered" nums;
+(*let _ =
+  insertion_benchmark "ordered" nums;
   print_newline ();
   insertion_benchmark "unordered" rand;
   print_newline ();
@@ -231,6 +240,6 @@ let _ =
   size_benchmark "ordered" nums;
   print_newline ();
   size_benchmark "unordered" rand;
-  print_newline ();*)
-  memory_benchmark rand
+  print_newline ();
+  memory_benchmark rand *)
 
