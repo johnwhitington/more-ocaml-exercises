@@ -1,26 +1,6 @@
 open More
 
-let substring = "row"
-
-let string = "this is a rower."
-
-let explode s =
-  let l = ref [] in
-    for p = String.length s downto 1 do
-      l := s.[p - 1] :: !l
-    done;
-    !l
-
-let implode l =
-  let s = String.create (List.length l) in
-    let rec list_loop x = function
-       [] -> ()
-     | i::t -> s.[x] <- i; list_loop (x + 1) t
-    in
-      list_loop 0 l;
-      s
-
-(* Search for a sublist in a list. *)
+(* Search for a pattern in a list. *)
 let rec search_list p l =
     List.length p <= List.length l
   && 
@@ -51,25 +31,21 @@ let rec search_list_inner p len_p l len_l =
 let search_list p l =
   search_list_inner p (List.length p) l (List.length l)
 
-(* Wrap it up *)
-let search ss s =
-  search_list (explode ss) (explode s)
-
 (* The same algorithm, directly translated into basic strings. *)
-let rec search ss s =
-    String.length ss <= String.length s
+let rec search p s =
+    String.length p <= String.length s
   &&
-    (String.sub s 0 (String.length ss) = ss ||
-     search ss (String.sub s 1 (String.length s - 1)))
+    (String.sub s 0 (String.length p) = p ||
+     search p (String.sub s 1 (String.length s - 1)))
 
 (* Now, do it in place. *)
-let rec at ss ssp s sp l =
-  l = 0 || ss.[ssp] = s.[sp] && at ss (ssp + 1) s (sp + 1) (l - 1)
+let rec at p pp s sp l =
+  l = 0 || p.[pp] = s.[sp] && at p (pp + 1) s (sp + 1) (l - 1)
 
-let rec search' n ss s =
-    String.length ss <= String.length s - n
+let rec search' n p s =
+    String.length p <= String.length s - n
   &&
-    (at ss 0 s n (String.length ss) || search' (n + 1) ss s)
+    (at p 0 s n (String.length p) || search' (n + 1) p s)
 
 let search = search' 0
 
@@ -82,45 +58,45 @@ let search = search' 0
 
 (* Returns the number of characters, zero or more, equal to 'ch' in ss starting
  * at sp *)
-let swallow_all ch ss sp =
-  let p = ref sp in
-    while !p < String.length ss && ss.[!p] = ch do p := !p + 1 done;
-    !p
+let swallow_all ch p sp =
+  let x = ref sp in
+    while !x < String.length p && p.[!x] = ch do x := !x + 1 done;
+    !x
 
-let rec at ss ssp s sp =
-  ssp > String.length ss - 1 || (* used whole pattern *)
+let rec at p pp s sp =
+  pp > String.length p - 1 || (* used whole pattern *)
     match
-      match ss.[ssp] with
+      match p.[pp] with
        | '?' ->
-           if ssp + 1 > String.length ss - 1 then None (* ? at end of pattern *)
+           if pp + 1 > String.length p - 1 then None (* ? at end of pattern *)
            else if sp > String.length s - 1 then Some (2, 0) (* No char left to match *)
-           else if ss.[ssp + 1] = s.[sp] then Some (2, 1) (* match *)
+           else if p.[pp + 1] = s.[sp] then Some (2, 1) (* match *)
            else Some (2, 0) (* no match *)
        | '*' -> 
-           if ssp + 1 > String.length ss - 1 then None else (* * at end of pattern *)
-             Some (2, swallow_all ss.[ssp + 1] ss sp) (* read zero or more items *)
+           if pp + 1 > String.length p - 1 then None else (* * at end of pattern *)
+             Some (2, swallow_all p.[pp + 1] p sp) (* read zero or more items *)
        | '+' ->
-           if ssp + 1 > String.length ss - 1 then None (* + at end of pattern *)
+           if pp + 1 > String.length p - 1 then None (* + at end of pattern *)
            else if sp > String.length s - 1 then None (* Nothing left to match *)
-           else if ss.[ssp + 1] = s.[sp] then
-             Some (2, swallow_all ss.[ssp + 1] ss sp) (* read one or more items *)
+           else if p.[pp + 1] = s.[sp] then
+             Some (2, swallow_all p.[pp + 1] p sp) (* read one or more items *)
            else None (* did not match *)
        | '\\' -> (* Next character to be taken literally *)
            let matched =
              (sp < String.length s &&
-              ssp < String.length ss - 1 &&
-              ss.[ssp + 1] = s.[sp])
+              pp < String.length p - 1 &&
+              p.[pp + 1] = s.[sp])
            in
              if matched then Some (2, 1) else None
        | c ->
            if sp < String.length s && c = s.[sp] then Some (1, 1) else None
     with
       None -> false
-    | Some (jump_ss, jump_s) -> at ss (ssp + jump_ss) s (sp + jump_s)
+    | Some (jump_p, jump_s) -> at p (pp + jump_p) s (sp + jump_s)
 
-let rec search' n ss s =
+let rec search' n p s =
   (n < String.length s || n = 0 && String.length s = 0) &&
-  (at ss 0 s n || search' (n + 1) ss s)
+  (at p 0 s n || search' (n + 1) p s)
 
 let search = search' 0
 

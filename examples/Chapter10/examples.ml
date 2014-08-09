@@ -1,10 +1,7 @@
-(* Introduction - factorials, lists, sets *)
-
-(* A. Basic method *)
-let rec interleave h l ls =
-  match ls with
-    [] -> [l @ [h]]
-  | x::xs -> (l @ (h :: x :: xs)) :: interleave h (l @ [x]) xs
+let rec interleave e seen l =
+  match l with
+    [] -> [seen @ [e]]
+  | x::xs -> (seen @ (e :: x :: xs)) :: interleave e (seen @ [x]) xs
 
 let combine x ps =
   List.concat (List.map (interleave x []) ps)
@@ -14,18 +11,11 @@ let rec perms p =
     [] -> [[]]
   | h::t -> combine h (perms t)
 
-(* # List.length (perms [1;2;3;4;5;6;7;8]);;
-- : int = 40320
-# List.length (perms [1;2;3;4;5;6;7;8;9]);;
-- : int = 362880
-# List.length (perms [1;2;3;4;5;6;7;8;9;10]);;
-Stack overflow during evaluation (looping recursion?). *)
-
-(* B. Make this tail recursive -- now 10 & 11 work, 12 too big to calculate. *)
-let rec interleave acc h l ls =
-  match ls with
-    [] -> (l @ [h]) :: acc
-  | x::xs -> interleave ((l @ (h :: x :: xs)) :: acc) h (l @ [x]) xs
+(* Tail recursive version *)
+let rec interleave acc e seen l =
+  match l with
+    [] -> (seen @ [e]) :: acc
+  | x::xs -> interleave ((seen @ (e :: x :: xs)) :: acc) e (seen @ [x]) xs
 
 let combine x ps =
   List.concat (List.map (interleave [] x []) ps)
@@ -35,7 +25,7 @@ let rec perms p =
     [] -> [[]]
   | h::t -> combine h (perms t)
 
-(* C. Another method. pick each element out, and use it as the first element. Easy with sets: *) 
+(* Another method. pick each element out, and use it as the first element. Easy with sets: *) 
 let rec without x l =
   match l with
     [] -> []
@@ -51,7 +41,7 @@ let rec perms l =
           (fun x -> List.map (fun l -> x :: l) (perms (without x l)))
           l)
 
-(* E. Version which can give the next permutation -- lexicographic permutation *)
+(* Version which can give the next permutation -- lexicographic order *)
 let firstchar arr =
   let f = ref (Array.length arr - 1) in
     for x = 0 to Array.length arr - 2 do
@@ -70,11 +60,6 @@ let swap arr a b =
   let t = arr.(a) in
     arr.(a) <- arr.(b);
     arr.(b) <- t
-
-let array_rev a o l =
-  for x = 0 to l / 2 - 1 do
-    swap a (o + x) (o + l - x - 1)
-  done
 
 let sort_subarray arr o l =
   let sub = Array.sub arr o l in
@@ -108,7 +93,7 @@ let all_permutations arr =
       done;
       Array.of_list (List.rev !perms)
 
-(* D. Lazy method from next perm one. *)
+(* Lazy method from next perm one. *)
 type 'a lazylist = Cons of 'a * (unit -> 'a lazylist)
 
 let rec perms x =

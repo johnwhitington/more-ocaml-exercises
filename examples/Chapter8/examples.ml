@@ -1,4 +1,26 @@
 (* Printf examples *)
+type 'a point =
+  {x : float;
+   y : float;
+   label : string;
+   content : 'a}
+
+let p =
+  {x = 4.5;
+   y = 6.0;
+   label = "P";
+   content = [1; 3; 1]}
+
+let string_of_point p =
+  p.label
+  ^ " = ("
+  ^ string_of_float p.x
+  ^ ", "
+  ^ string_of_float p.y
+  ^ ")"
+
+let string_of_point p =
+  Printf.sprintf "%s = (%f, %f)" p.label p.x p.y
 
 (* Integers in columns *)
 let data =
@@ -35,4 +57,7 @@ let print_line a b c =
 let print_nums nums =
   print_header ();
   List.iter (fun (a, b, c) -> print_line a b c) nums
+
+let print_point p =
+  Printf.printf "%s = (%f, %f)%!" p.label p.x p.y
 
