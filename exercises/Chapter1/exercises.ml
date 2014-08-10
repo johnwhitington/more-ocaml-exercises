@@ -11,10 +11,10 @@ let length l =
   List.fold_left (fun a _ -> a + 1) 0 l
 
 (* 3 *)
-let last exemplar l =
+let last l =
   match l with
     [] -> None
-  | _ -> Some (List.fold_left (fun _ e -> e) exemplar l)
+  | _ -> Some (List.fold_left (fun _ e -> e) (List.hd l) l)
 
 (* 4 *)
 let rev l =
@@ -26,7 +26,10 @@ let member x l =
 
 (* 6 *)
 let sentence words =
-  List.fold_left (fun a e -> if a = "" then e else a ^ " " ^ e) "" words
+  List.fold_left
+    (fun a e -> if a = "" then e else a ^ " " ^ e)
+    ""
+    words
 
 (* 7 *)
 type 'a tree =

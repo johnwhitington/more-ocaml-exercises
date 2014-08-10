@@ -15,7 +15,7 @@ let input_of_array a =
     {pos_in = (fun () -> !pos);
      seek_in =
        (fun p ->
-          if p < 0 then raise (Invalid_argument "seek before beginning");
+          if p < 0 then raise (Invalid_argument "seek < 0");
           pos := p);
      input_char =
        (fun () ->
@@ -28,12 +28,17 @@ let input_of_array a =
 let input_string i n =
   let b = Buffer.create 100 in
     try
-      for x = 0 to n - 1 do Buffer.add_char b (i.input_char ()) done;
+      for x = 0 to n - 1 do
+        Buffer.add_char b (i.input_char ())
+      done;
       Buffer.contents b
     with
       End_of_file -> Buffer.contents b
 
 (* 3 *)
+
+(* We have named it input2 here, since one cannot have two types of the same
+ * name in a single file. *)
 type input2 =
   {pos_in : unit -> int;
    seek_in : int -> unit;
@@ -55,7 +60,7 @@ let input_of_string s =
     {pos_in = (fun () -> !pos);
      seek_in =
        (fun p ->
-          if p < 0 then raise (Invalid_argument "seek before beginning");
+          if p < 0 then raise (Invalid_argument "seek < 0");
           pos := p);
      input_char =
        (fun () ->
@@ -70,6 +75,9 @@ let input_of_string s =
      in_channel_length = String.length s}
 
 (* 4 *)
+
+(* We have named it input3 here, since one cannot have two types of the same
+ * name in a single file. *)
 type input3 =
   {pos_in : unit -> int;
    seek_in : int -> unit;
@@ -93,7 +101,7 @@ let input_of_string s =
     {pos_in = (fun () -> !pos);
      seek_in =
        (fun p ->
-          if p < 0 then raise (Invalid_argument "seek before beginning");
+          if p < 0 then raise (Invalid_argument "seek < 0");
           pos := p);
      input_char =
        (fun () ->

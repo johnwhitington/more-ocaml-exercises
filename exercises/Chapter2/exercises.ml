@@ -15,7 +15,7 @@ let rec lnth (Cons (h, tf)) n =
 (* 3 *)
 let rec lrepeating_inner c l =
   match c with
-    [] -> failwith "lrepeating: empty list"
+    [] -> raise (Invalid_argument "lrepeating: empty list")
   | [x] -> Cons (x, fun () -> lrepeating_inner l l)
   | h::t -> Cons (h, fun () -> lrepeating_inner t l)
 
@@ -39,7 +39,8 @@ let rec letter_string n =
   if n <= 26 then
     let s = String.create 1 in s.[0] <- char_of_int (n + 64); s
   else
-    letter_string ((n - 1) / 26) ^ letter_string (((n - 1) mod 26) + 1)
+    letter_string ((n - 1) / 26) ^
+    letter_string (((n - 1) mod 26) + 1)
 
 let rec lseq n =
   Cons (n, fun () -> lseq (n + 1))

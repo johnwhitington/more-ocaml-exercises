@@ -1,10 +1,3 @@
-(* Answers to Records questions *)
-
-(* 1 *)
-let x = ref 0
-
-(* x.contents <- 1 *)
-
 (* 2 *)
 let string_of_month m =
   match m with
@@ -57,7 +50,6 @@ let string_of_time () =
     ^ " "
     ^ string_of_int (tm_year + 1900)
 
-
 (* 4 *)
 type ('a, 'b, 'c) t =
   {a : 'a;
@@ -91,22 +83,20 @@ let write_gc_summary filename =
       output_string ch (string_of_int major_collections);
       close_out ch
 
+let _ = write_gc_summary "gc.txt"
+
 (* 5 (b) *)
 let start_of_major = 0x001
-and minor_collection = 0x002
-and heap_grow_shrink = 0x004
-and stack_resizing = 0x008
-and heap_compaction = 0x010
-and change_parameters = 0x020
-and compute_slice_size = 0x040
-and call_finalisation = 0x080
-and bytecode_exe_search = 0x100
+let minor_collection = 0x002
+let heap_grow_shrink = 0x004
+let stack_resizing = 0x008
+let heap_compaction = 0x010
+let change_parameters = 0x020
+let compute_slice_size = 0x040
+let call_finalisation = 0x080
+let bytecode_exe_search = 0x100
 
 let change_verbosity vs =
-  let n = 
-    List.fold_left ( + ) 0 vs
-  in
+  let n = List.fold_left ( + ) 0 vs in
     Gc.set {(Gc.get ()) with Gc.verbose = n}
-
-let _ = write_gc_summary "gc.txt"
 

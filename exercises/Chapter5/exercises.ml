@@ -47,7 +47,8 @@ let getval_32 b n =
     if n = 0 then 0l else
       let r = ref Int32.zero in
         for x = n - 1 downto 0 do
-          r := Int32.logor !r (Int32.shift_left (Int32.of_int ((if getbit b then 1 else 0))) x)
+          let num = Int32.of_int (if getbit b then 1 else 0) in
+            r := Int32.logor !r (Int32.shift_left num x)
         done;
         !r
 
@@ -91,10 +92,15 @@ let putval_fast o v l =
 (* 4 *) (* FIX *)
 let putval_32 o v l =
   for x = l - 1 downto 0 do
-    putbit o (Int32.to_int (Int32.logand v (Int32.shift_left (Int32.of_int x) 1)))
+    putbit o
+      (Int32.to_int
+        (Int32.logand v (Int32.shift_left (Int32.of_int x) 1)))
   done
 
 (* 5 *)
+
+(* We name this output2 since one cannot have two types with the same name in a
+ * single file. *)
 type output2 =
   {output_char : char -> unit;
    rewind : unit -> unit;
@@ -115,6 +121,8 @@ let output_of_string s =
      out_channel_length =
        (fun () -> String.length s)}
 
+(* We name this output_bits2 since one cannot have two types with the same name
+ * in a single file. *)
 type output_bits2 =
   {output : output2; 
    mutable obyte : int;
