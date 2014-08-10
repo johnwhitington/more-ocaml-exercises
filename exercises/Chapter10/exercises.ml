@@ -1,6 +1,16 @@
 open More
 
-(* A. Basic method *)
+(* 1. Generate all the combinations. *)
+let rec combinations l =
+  match l with
+    [] -> [[]]
+  | h::t ->
+      let cs = combinations t in
+        List.map (fun x -> h :: x) cs @ cs
+
+(* 2. Generate all the permi-combinations. *)
+
+(* Basic method, from the chapter. *)
 let rec interleave h l ls =
   match ls with
     [] -> [l @ [h]]
@@ -14,15 +24,7 @@ let rec perms p =
     [] -> [[]]
   | h::t -> combine h (perms t)
 
-(* 1. Generate all the combinations. *)
-let rec combinations l =
-  match l with
-    [] -> [[]]
-  | h::t ->
-      let cs = combinations t in
-        List.map (fun x -> h :: x) cs @ cs
-
-(* 2. Generate all the permi-combinations. *)
+(* Now, our function: *)
 let permicombinations l =
   List.concat (List.map perms (combinations l))
 
@@ -35,7 +37,7 @@ let rec bool_lists n =
         (List.map (fun l -> true :: l) ls) @
         (List.map (fun l -> false :: l) ls)
 
-(* 4. Reverse in place of sort *)
+(* 4. Reverse the subarray a..b in array arr. *)
 let swap arr a b =
   let t = arr.(a) in
     arr.(a) <- arr.(b);
@@ -80,17 +82,17 @@ let ceiling f l =
       let before, after = split_at h l in
         (before, h, after)
 
-(* Predicate on non-increasingness *)
-let rec non_increasing l =
-  match l with
-    [] | [_] -> true
-  | a::b::t -> a >= b && non_increasing (b :: t)
-
 (* Find the next permutation *)
 let next_permutation l =
   let before_f, f, after_f = first l in
     let before_c, c, after_c = ceiling f after_f in
       before_f @ [c] @ List.rev (before_c @ [f] @ after_c)
+
+(* Predicate on non-increasingness *)
+let rec non_increasing l =
+  match l with
+    [] | [_] -> true
+  | a::b::t -> a >= b && non_increasing (b :: t)
 
 (* The main function *)
 let rec all_permutations_inner a l =

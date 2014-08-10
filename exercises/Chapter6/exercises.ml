@@ -1,4 +1,3 @@
-(* Answers for chapter 6 *)
 open More
 open Input
 open Bits
@@ -68,8 +67,6 @@ let white_terminating_codes =
     [0; 0; 1; 1; 0; 0; 1; 0];
     [0; 0; 1; 1; 0; 0; 1; 1];
     [0; 0; 1; 1; 0; 1; 0; 0]|]
-
-
 
 (* QUESTIONS *)
 
@@ -172,7 +169,7 @@ let make_tree arr numbers =
 let white_terminating_tree =
   make_tree
     white_terminating_codes
-    (from 0 (Array.length white_terminating_codes - 1))
+    (Util.from 0 (Array.length white_terminating_codes - 1))
 
 (* 4. Making a histogram of black and white frequencies. This is a pair of int
  * arrays of length 1792 for run lengths. *)
@@ -217,8 +214,5 @@ let print_histogram =
   Array.iteri
     (fun x n -> if n > 0 then Printf.printf "%i runs of length %i\n" n x)
 
-let test i w h =
-  histogram_of_input i w h
-
-
+(* FIXME: Add code to actually print out the example when this is run. *)
 

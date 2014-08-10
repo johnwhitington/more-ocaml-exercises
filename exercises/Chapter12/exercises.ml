@@ -36,14 +36,15 @@ let game_tree =
 let rec numwins turn (Move (b, bs)) =
   (if won (List.map (fun t -> t = turn) b) then 1 else 0) +
   List.fold_left ( + ) 0 (List.map (numwins turn) bs)
+
 (* numwins X game_tree = 77904 *)
 (* numwins O game_tree = 131184 *)
 
 let rec drawn (Move (b, bs)) =
     (if
        empty b = [] &&
-       not (won (List.map (fun t -> t = O) b)) &&
-       not (won (List.map (fun t -> t = X) b))
+       not (won (List.map (( = ) O) b)) &&
+       not (won (List.map (( = ) X) b))
      then 1 else 0)
   +
     List.fold_left ( + ) 0 (List.map drawn bs)
@@ -58,6 +59,8 @@ let rec terminals (Move (b, bs)) =
 (* 2 *)
 
 (* The changes are simple *)
+
+(* We call this tree2 since no two types in a single file may have the same name *)
 
 type tree2 = Move2 of turn list * (unit -> tree2 list)
 
@@ -101,7 +104,8 @@ let rec drawn (Move2 (b, bs)) =
     List.fold_left ( + ) 0 (List.map drawn (bs ()))
 
 let draws pos =
-  List.fold_left ( + ) 0 (List.map drawn (select_case pos game_tree))
+  List.fold_left ( + ) 0
+    (List.map drawn (select_case pos game_tree))
 
 let centre = [E; E; E; E; O; E; E; E; E] 
 
@@ -139,7 +143,6 @@ val corner_drawn : int = 20736*)
 
 (* total is 255168, of course. *)
 
-
 (* 3 *)
 let rec combinations l =
   match l with
@@ -148,7 +151,7 @@ let rec combinations l =
       let cs = combinations t in
         List.map (fun x -> h :: x) cs @ cs
 
-
+(* We name this tree3 since no two types in a single file may share a name *)
 type tree3 = Move of int list * int list * tree3 list
 
 let sum l = List.fold_left ( + ) 0 l = 15
@@ -162,23 +165,24 @@ let drawn l l' = List.length l + List.length l' = 9
 let possibles all =
   List.filter (fun x -> not (List.mem x all)) [1; 2; 3; 4; 5; 6; 7; 8; 9]
 
-let rec nextmoves3 xs os o_is_playing =
+let rec nextmoves xs os o_is_playing =
   let next =
     if won xs || won os || drawn xs os then [] else
       if o_is_playing
         then
           List.map
-            (fun new_os -> nextmoves3 xs new_os (not o_is_playing))
+            (fun new_os -> nextmoves xs new_os (not o_is_playing))
             (List.map (fun q -> q :: os) (possibles (xs @ os)))
         else
           List.map
-            (fun new_xs -> nextmoves3 new_xs os (not o_is_playing))
+            (fun new_xs -> nextmoves new_xs os (not o_is_playing))
             (List.map (fun q -> q :: xs) (possibles (xs @ os)))
   in
     Move (xs, os, next)
 
-let game_tree = nextmoves3 [] [] true
+let game_tree = nextmoves [] [] true
 
 let rec xwins (Move (xs, os, cs)) =
-  (if won xs then 1 else 0) + List.fold_left ( + ) 0 (List.map xwins cs)
+  (if won xs then 1 else 0) +
+  List.fold_left ( + ) 0 (List.map xwins cs)
 

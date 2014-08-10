@@ -13,7 +13,8 @@ let rec cycle_of_points_inner b l =
 let cycle_of_points l =
   match l with
     [] -> ""
-  | h::t -> cycle_of_points_inner (Buffer.create 256) ((h :: t) @ [h])
+  | h::t ->
+      cycle_of_points_inner (Buffer.create 256) ((h :: t) @ [h])
 
 (* 2 *)
 let hex_of_string s = 
@@ -30,4 +31,7 @@ let _ = Printf.printf "%s" (mkstring ())
 
 (* 4 *)
 let _ = Printf.sprintf "(%*i)" 10 1
+
+let print_integers w ns =
+  List.iter (Printf.printf "(%*i)" w) ns
 

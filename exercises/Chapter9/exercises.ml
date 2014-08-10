@@ -32,9 +32,10 @@ let rec longest_prefix_inner currpos bestpos bestlen p l =
     [] -> (bestpos, bestlen)
   | h::t ->
       let prelen = prefix p l in
-        if prelen > bestlen
-          then longest_prefix_inner (currpos + 1) currpos prelen p t
-          else longest_prefix_inner (currpos + 1) bestpos bestlen p t
+        if prelen > bestlen then
+          longest_prefix_inner (currpos + 1) currpos prelen p t
+        else
+          longest_prefix_inner (currpos + 1) bestpos bestlen p t
 
 let longest_prefix p l =
   longest_prefix_inner 0 0 0 p l
@@ -57,7 +58,6 @@ let rec search' n ss s =
 
 let search_better = search' 0
 
-
 let profile f =
   let t = Unix.gettimeofday () in
     for x = 1 to 1_000_000 do
@@ -68,6 +68,8 @@ let profile f =
 let _ =
   Printf.printf "Naive version took %f seconds\n" (profile search_naive);
   Printf.printf "Better version tool %f seconds\n" (profile search_better)
+
+(* 4. (See examples for this chapter) *)
 
 (* 5. Case-insensitive search *)
 let search ?(nocase = false) ss s =

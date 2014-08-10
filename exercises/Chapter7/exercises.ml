@@ -16,8 +16,6 @@ let filled () =
     a
 
 (* 3 *)
-
-(* 4 *)
 let sub b ~off ~len =
   Buffer.sub b off len
 
@@ -28,13 +26,6 @@ let add_substring b s ~ofs ~len =
   Buffer.add_substring b s ofs len
 
 (* 5 *)
-let rec map_inner a f l =
-  match l with
-    [] -> List.rev a
-  | h::t -> map_inner (f h :: a) f t
-
-let map f l = map_inner [] f l
-
 let rec map ?(a = []) f l =
   match l with
     [] -> List.rev a

@@ -1,56 +1,10 @@
 (* Set representations *)
 open More
 
-(* ============================ Exercises ============================= *)
+(* The answer to Question 1 is found in the examples. *)
 
-(* Sets from sets *)
-module IntSet :
-  sig
-    type t
-    val set_of_list : int list -> t
-    val list_of_set : t -> int list
-    val insert : int -> t -> t
-    val size : t -> int
-    val member : int -> t -> bool
-  end
-=
-  struct
-    module S = Set.Make (struct type t = int let compare = compare end)
-    
-    type t = S.t 
-
-    let list_of_set s = S.elements s
-
-    let set_of_list l = List.fold_right S.add l S.empty
-
-    let member = S.mem
-
-    let insert = S.add
-
-    let size = S.cardinal
-  end
-
-let nums = Util.from 1 50000
-
-let rand = Array.to_list (Array.init 50000 (fun _ -> Random.int 1073741823))
-
-(* Benchmark sets from sets. *)
-let benchmark_intset name ns =
-  let a = Unix.gettimeofday () in
-    let set = IntSet.set_of_list ns in
-      let b = Unix.gettimeofday () in
-        List.iter (fun x -> ignore (IntSet.member x set)) ns;
-        let c = Unix.gettimeofday () in
-          Printf.printf
-            "For %s, insertion took %f, membership %f\n"
-            name (b -. a) (c -. b)
-
-let _ =
-  benchmark_intset "ordered" nums;
-  benchmark_intset "unordered" rand
-
-
-module type SetType2 =
+(* Questions 2 & 4 combined *)
+module type SetType =
   sig
     type 'a t
     val set_of_list : 'a list -> 'a t
@@ -61,7 +15,7 @@ module type SetType2 =
     val union : 'a t -> 'a t -> 'a t
   end
 
-module SetList2 : sig include SetType2 end =
+module SetList : sig include SetType end =
   struct
     type 'a t = 'a list
 
@@ -80,7 +34,7 @@ module SetList2 : sig include SetType2 end =
     let union a b = List.fold_left (fun x y -> insert y x) a b
   end
 
-module SetTree2 : sig include SetType2 end =
+module SetTree : sig include SetType end =
   struct
     type 'a t =
       Lf
@@ -121,7 +75,7 @@ module SetTree2 : sig include SetType2 end =
   end
 
 (* And with different Br nodes *)
-module SetRedBlack2 : sig include SetType2 end =
+module SetRedBlack : sig include SetType end =
   struct
     type 'a t = 
       Lf
@@ -184,7 +138,7 @@ module SetRedBlack2 : sig include SetType2 end =
       List.fold_left (fun x y -> insert y x) a (list_of_set b)
   end
 
-module SetHashtbl2 : sig include SetType2 end =
+module SetHashtbl : sig include SetType end =
   struct
     type 'a t = ('a, unit) Hashtbl.t
 
@@ -208,20 +162,52 @@ module SetHashtbl2 : sig include SetType2 end =
       set_of_list (list_of_set a @ list_of_set b)
   end
 
-(* Tail recursive *)
-(*let list_of_set_tr s =
-  match s with
-    Lf -> []
-  | Br (l, x, r) ->
-      let st = Stack.create () and a = ref [] in
-        let visit l x r =
-          Stack.push l st; Stack.push r st; a := x :: !a
-        in
-          visit l x r;
-          while Stack.length st > 0 do
-            match Stack.pop st with
-              Lf -> ()
-            | Br (l, x, r) -> visit l x r
-          done;
-          !a*)
+
+(* Question 3. *)
+module IntSet :
+  sig
+    type t
+    val set_of_list : int list -> t
+    val list_of_set : t -> int list
+    val insert : int -> t -> t
+    val size : t -> int
+    val member : int -> t -> bool
+  end
+=
+  struct
+    module S = Set.Make (struct type t = int let compare = compare end)
+    
+    type t = S.t 
+
+    let list_of_set s = S.elements s
+
+    let set_of_list l = List.fold_right S.add l S.empty
+
+    let member = S.mem
+
+    let insert = S.add
+
+    let size = S.cardinal
+  end
+
+let nums = Util.from 1 50000
+
+let rand = Array.to_list (Array.init 50000 (fun _ -> Random.int 1073741823))
+
+(* Benchmark sets from sets. *)
+let benchmark_intset name ns =
+  let a = Unix.gettimeofday () in
+    let set = IntSet.set_of_list ns in
+      let b = Unix.gettimeofday () in
+        List.iter (fun x -> ignore (IntSet.member x set)) ns;
+        let c = Unix.gettimeofday () in
+          Printf.printf
+            "For %s, insertion took %f, membership %f\n"
+            name (b -. a) (c -. b)
+
+let _ =
+  benchmark_intset "ordered" nums;
+  benchmark_intset "unordered" rand
+
+
 
