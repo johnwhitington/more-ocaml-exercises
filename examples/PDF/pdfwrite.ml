@@ -1,3 +1,4 @@
+(* Original string_of_array, from the chapter *)
 (*let rec string_of_array a =
   let b = Buffer.create 100 in
     Buffer.add_string b "[";
@@ -9,6 +10,7 @@
     Buffer.add_string b " ]";
     Buffer.contents b*)
 
+(* The new string_of_array (answer to question 1) *)
 let rec string_of_array a =
   let b = Buffer.create 100 in
     Buffer.add_string b "[";
@@ -20,6 +22,7 @@ let rec string_of_array a =
     Buffer.add_string b "]";
     Buffer.contents b
 
+(* Original string_of_dictionary, from the chapter *)
 (*and string_of_dictionary d =
   let b = Buffer.create 100 in
     Buffer.add_string b "<<";
@@ -33,6 +36,7 @@ let rec string_of_array a =
     Buffer.add_string b " >>";
     Buffer.contents b*)
 
+(* The new string_of_dictionary, (answer to question 1 *)
 and string_of_dictionary d =
   let b = Buffer.create 100 in
     Buffer.add_string b "<<";
