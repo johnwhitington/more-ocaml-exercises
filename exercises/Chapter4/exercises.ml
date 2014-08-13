@@ -85,7 +85,7 @@ type input3 =
    input_byte : unit -> int;
    in_channel_length : int}
 
-let no_more = -1
+let no_more = (-1)
 
 let input_of_channel ch =
   {pos_in = (fun () -> pos_in ch);
