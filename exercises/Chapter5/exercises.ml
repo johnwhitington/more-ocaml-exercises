@@ -68,7 +68,7 @@ let flush o =
   o.obit <- 7
 
 let rec putbit o b =
-  if o.obit = -1 then
+  if o.obit = (-1) then
     begin
       flush o;
       putbit o b
