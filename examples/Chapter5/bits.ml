@@ -14,7 +14,7 @@ let input_bits_of_input i =
 let rec getbit b =
   if b.bit = 0 then
     begin
-      b.byte <- int_of_char (let x = b.input.input_char () in Printf.printf "Read byte %02x\n" (int_of_char x); x);
+      b.byte <- int_of_char (b.input.input_char ());
       b.bit <- 128;
       getbit b
     end
@@ -43,7 +43,9 @@ let getval_32 b n =
   else
     let r = ref Int32.zero in
       for x = n - 1 downto 0 do
-        r := Int32.logor !r (Int32.shift_left (Int32.of_int (if getbit b then 1 else 0)) x)
+        r :=
+          Int32.logor !r
+            (Int32.shift_left (Int32.of_int (if getbit b then 1 else 0)) x)
       done;
       !r
 
@@ -56,8 +58,8 @@ let print_header filename =
     let dest_port = getval b 16 in
     let seq_number = getval_32 b 32 in
     let ack_number = getval_32 b 32 in
-    let data_offset = getval b 4 in (* data offset *)
-    let reserved = getval b 6 in (* reserved *)
+    let data_offset = getval b 4 in
+    let reserved = getval b 6 in
     let urgent = getbit b in
     let ack = getbit b in
     let push = getbit b in
@@ -106,19 +108,16 @@ type output_bits =
 let output_bits_of_output o =
   {output = o;
    obyte = 0;
-   obit = 7} (* FIXED *)
+   obit = 7}
 
 (* Flush a byte to the underlying output, padding with zeroes. If output byte
  * has not been touched, don't output. *)
 let flush o =
-  Printf.printf "Writing byte with value %02x\n" o.obyte;
   if o.obit < 7 then o.output.output_char (char_of_int o.obyte);
   o.obyte <- 0;
   o.obit <- 7
 
 let rec putbit o b =
-  Printf.printf "putbit %i\n" b;
-  begin
   if o.obit = (-1) then
     begin
       flush o;
@@ -126,22 +125,19 @@ let rec putbit o b =
     end
   else
     begin
-      if b = 1 then o.obyte <- o.obyte lor (1 lsl o.obit);
+      if b <> 0 then o.obyte <- o.obyte lor (1 lsl o.obit);
       o.obit <- o.obit - 1
     end
-  end
 
 let putval o v l =
-  Printf.printf "putval %i %i\n" v l;
   for x = l - 1 downto 0 do
-    putbit o (if (v land (1 lsl x)) > 0 then 1 else 0) (* FIXED *)
+    putbit o (v land (1 lsl x))
   done
 
 (* This function is one of the exercises. Do not peek! *)
 let putval_32 o v l =
-  Printf.printf "putval_32 %li %i\n" v l;
   for x = l - 1 downto 0 do
-    putbit o (if (Int32.to_int (Int32.logand v (Int32.shift_left 1l x))) > 0 then 1 else 0) (*FIXED*)
+    putbit o (Int32.to_int (Int32.logand v (Int32.shift_left 1l x)))
   done
 
 (* Output bit streams example. *)
@@ -149,38 +145,22 @@ let output_header filename =
   let ch = open_out_bin filename in
   let o = output_of_channel ch in
   let bits = output_bits_of_output o in
-    print_endline "A";
     putval bits 38 16;
-    print_endline "B";
     putval bits 47892 16;
-    print_endline "C";
     putval_32 bits 1656212531l 32;
-    print_endline "D";
     putval_32 bits 1481973485l 32;
-    print_endline "E";
     putval bits 0 4;
-    print_endline "F";
     putval bits 32 6;
-    print_endline "G";
     putbit bits 0;
-    print_endline "H";
     putbit bits 0;
-    print_endline "I";
     putbit bits 0;
-    print_endline "J";
     putbit bits 0;
-    print_endline "K";
     putbit bits 0;
-    print_endline "L";
     putbit bits 0;
-    print_endline "M";
     putval bits 17664 16;
-    print_endline "N";
     putval bits 888 16;
-    print_endline "O";
     putval bits 63404 16;
-    print_endline "P";
-    flush bits; (* FIXED *)
+    flush bits;
     close_out ch
 
 let _ =
