@@ -207,7 +207,7 @@ let rec rotate_90 obj =
 and rotate_90_dict (k, v)  =
   match k with
     "/Rotate" -> ("/Rotate", Pdf.Integer 90)
-  | _ -> (k, v)
+  | _ -> (k, rotate_90 v)
 
 
 
