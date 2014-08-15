@@ -75,7 +75,7 @@ let rec putbit o b =
     end
   else
     begin
-      if b = 1 then o.obyte <- o.obyte lor (1 lsl o.obit);
+      if b <> 0 then o.obyte <- o.obyte lor (1 lsl o.obit);
       o.obit <- o.obit - 1
     end
 
@@ -89,12 +89,10 @@ let putval_fast o v l =
     then o.output.output_char (char_of_int v)
     else putval o v l
     
-(* 4 *) (* FIX *)
+(* 4 *)
 let putval_32 o v l =
   for x = l - 1 downto 0 do
-    putbit o
-      (Int32.to_int
-        (Int32.logand v (Int32.shift_left (Int32.of_int x) 1)))
+    putbit o (Int32.to_int (Int32.logand v (Int32.shift_left 1l x)))
   done
 
 (* 5 *)
@@ -131,10 +129,10 @@ type output_bits2 =
 let output_bits_of_output output =
   {output;
    obyte = 0;
-   obit = 0}
+   obit = 7}
   
 let rec putbit o b =
-  if o.obit = -1 then
+  if o.obit = (-1) then
     begin
       o.obyte <- 0;
       o.obit <- 7;
@@ -142,7 +140,7 @@ let rec putbit o b =
     end
   else
     begin
-      if b = 1 then o.obyte <- o.obyte lor (1 lsl o.obit);
+      if b <> 0 then o.obyte <- o.obyte lor (1 lsl o.obit);
       o.output.output_char (char_of_int o.obyte);
       o.output.rewind ();
       o.obit <- o.obit - 1
