@@ -78,19 +78,19 @@ let white_terminating_codes =
 type run = Same of int * int | Diff of int list
 
 (* Return list of same characters from a non-null list, and rest *)
-let rec getsame x n l =
+let rec get_same x n l =
   match l with
-  | h::t when h = x -> getsame x (n + 1) t
+  | h::t when h = x -> get_same x (n + 1) t
   | _ -> (n, l)
 
 (* Return list of different characters from a non-null list, until two are the
  * same as one another *)
-let rec getdiff a l =
+let rec get_different a l =
   match l with
     [] -> (List.rev a, [])
   | h::t ->
-      if a = [] then getdiff [h] t
-      else if h <> List.hd a then getdiff (h :: a) t
+      if a = [] then get_different [h] t
+      else if h <> List.hd a then get_different (h :: a) t
       else (List.rev (List.tl a), List.hd a :: l)
 
 (* Get a single run *)
@@ -98,8 +98,8 @@ let getrun l =
   match l with
     [] -> raise (Invalid_argument "getrun")
   | h::_ ->
-      match getsame h 0 l with
-        1, _ -> let diff, rest = getdiff [] l in (Diff diff, rest)
+      match get_same h 0 l with
+        1, _ -> let diff, rest = get_different [] l in (Diff diff, rest)
       | n, rest -> (Same (n, h), rest)
 
 (* Build the next chars from a run *)

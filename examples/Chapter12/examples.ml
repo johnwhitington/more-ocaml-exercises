@@ -14,12 +14,12 @@ let empty b =
 let replace turn board p =
   Util.take board (p - 1) @ [turn] @ Util.drop board p
 
-let flipturn t =
+let flip_turn t =
   match t with O -> X | X -> O
 
 type tree = Move of turn list * tree list
 
-let rec nextmoves turn board =
+let rec next_moves turn board =
   let next =
     if
       won (List.map (fun t -> t = O) board) ||
@@ -28,15 +28,15 @@ let rec nextmoves turn board =
       []
     else
       List.map
-        (nextmoves (flipturn turn))
+        (next_moves (flip_turn turn))
         (List.map (replace turn board) (empty board))
   in
     Move (board, next)
 
 let game_tree =
-  nextmoves O [E; E; E; E; E; E; E; E; E]
+  next_moves O [E; E; E; E; E; E; E; E; E]
 
-let rec numwins turn (Move (b, bs)) =
+let rec num_wins turn (Move (b, bs)) =
   (if won (List.map (fun t -> t = turn) b) then 1 else 0) +
-  List.fold_left ( + ) 0 (List.map (numwins turn) bs)
+  List.fold_left ( + ) 0 (List.map (num_wins turn) bs)
 

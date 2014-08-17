@@ -14,31 +14,34 @@ let replace turn board p =
 let empty b =
   List.map snd (List.filter (fun (t, _) -> t = E) (List.combine b [1; 2; 3; 4; 5; 6; 7; 8; 9]))
 
-let flipturn t =
+let flip_turn t =
   match t with O -> X | X -> O
 
 type tree = Move of turn list * tree list
 
-let rec nextmoves turn board =
+let rec next_moves turn board =
   let next =
-    if won (List.map (fun t -> t = O) board) || won (List.map (fun t -> t = X) board) then
+    if
+      won (List.map (fun t -> t = O) board) ||
+      won (List.map (fun t -> t = X) board)
+    then
       []
     else
       List.map
-        (nextmoves (flipturn turn))
+        (next_moves (flip_turn turn))
         (List.map (replace turn board) (empty board))
   in
     Move (board, next)
 
 let game_tree =
-  nextmoves O [E; E; E; E; E; E; E; E; E]
+  next_moves O [E; E; E; E; E; E; E; E; E]
 
-let rec numwins turn (Move (b, bs)) =
+let rec num_wins turn (Move (b, bs)) =
   (if won (List.map (fun t -> t = turn) b) then 1 else 0) +
-  List.fold_left ( + ) 0 (List.map (numwins turn) bs)
+  List.fold_left ( + ) 0 (List.map (num_wins turn) bs)
 
-(* numwins X game_tree = 77904 *)
-(* numwins O game_tree = 131184 *)
+(* num_wins X game_tree = 77904 *)
+(* num_wins O game_tree = 131184 *)
 
 let rec drawn (Move (b, bs)) =
     (if
@@ -64,20 +67,23 @@ let rec terminals (Move (b, bs)) =
 
 type tree2 = Move2 of turn list * (unit -> tree2 list)
 
-let rec nextmoves2 turn board =
+let rec next_moves turn board =
   let next =
     fun () ->
-      if won (List.map (fun t -> t = O) board) || won (List.map (fun t -> t = X) board) then
+      if
+        won (List.map (fun t -> t = O) board) ||
+        won (List.map (fun t -> t = X) board)
+      then
         []
       else
         List.map
-          (nextmoves2 (flipturn turn))
+          (next_moves (flip_turn turn))
           (List.map (replace turn board) (empty board))
   in
     Move2 (board, next)
 
 let game_tree =
-  nextmoves2 O [E; E; E; E; E; E; E; E; E]
+  next_moves O [E; E; E; E; E; E; E; E; E]
 
 (* We wish to force evaluation once, take only the case where the centre is
  * chosen, and then force all of that case. *)
@@ -86,13 +92,13 @@ let select_case board (Move2 (_, f)) =
     [Move2 (b, g)] -> g ()
   | _ -> raise (Failure "select_case")
 
-let rec numwins turn (Move2 (b, bs)) =
+let rec num_wins turn (Move2 (b, bs)) =
   (if won (List.map (fun t -> t = turn) b) then 1 else 0) +
-  List.fold_left ( + ) 0 (List.map (numwins turn) (bs ()))
+  List.fold_left ( + ) 0 (List.map (num_wins turn) (bs ()))
 
 let pos_wins turn pos =
   List.fold_left ( + ) 0
-    (List.map (numwins turn) (select_case pos game_tree))
+    (List.map (num_wins turn) (select_case pos game_tree))
 
 let rec drawn (Move2 (b, bs)) =
     (if
@@ -165,22 +171,22 @@ let drawn l l' = List.length l + List.length l' = 9
 let possibles all =
   List.filter (fun x -> not (List.mem x all)) [1; 2; 3; 4; 5; 6; 7; 8; 9]
 
-let rec nextmoves xs os o_is_playing =
+let rec next_moves xs os o_is_playing =
   let next =
     if won xs || won os || drawn xs os then [] else
       if o_is_playing
         then
           List.map
-            (fun new_os -> nextmoves xs new_os (not o_is_playing))
+            (fun new_os -> next_moves xs new_os (not o_is_playing))
             (List.map (fun q -> q :: os) (possibles (xs @ os)))
         else
           List.map
-            (fun new_xs -> nextmoves new_xs os (not o_is_playing))
+            (fun new_xs -> next_moves new_xs os (not o_is_playing))
             (List.map (fun q -> q :: xs) (possibles (xs @ os)))
   in
     Move (xs, os, next)
 
-let game_tree = nextmoves [] [] true
+let game_tree = next_moves [] [] true
 
 let rec xwins (Move (xs, os, cs)) =
   (if won xs then 1 else 0) +

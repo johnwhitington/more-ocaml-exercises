@@ -10,10 +10,10 @@ let p =
    label = "P";
    content = [1; 3; 1]}
 
-let mkpoint x y l c =
+let make_point x y l c =
   {x = x; y = y; label = l; content = c}
 
-let mkpoint x y label content =
+let make_point x y label content =
   {x; y; label; content}
 
 let string_of_point p =

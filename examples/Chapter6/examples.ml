@@ -46,7 +46,7 @@ let decompress_string = process decompress
 
 (* Return the run (of length 1 to 128) of like characters as (byte, count).
  * Raises End_of_file if already at end of file. *)
-let getsame i =
+let get_same i =
   let rec getcount ch c =
     if c = 128 then 128 else
       try
@@ -60,7 +60,7 @@ let getsame i =
 
 (* Get the run (of length 1 to 128) of differing characters as a list. Raises
  * End_of_file if already at end of file at start of function. *)
-let getdifferent i =
+let get_different i =
   let rec getdiffinner a c =
     if c = 128 then List.rev a else
       try
@@ -76,10 +76,10 @@ let getdifferent i =
 let compress i o =
   try
     while true do
-      match getsame i with
+      match get_same i with
         (_, 1) ->
           rewind i;
-          let cs = getdifferent i in
+          let cs = get_different i in
             o.output_char (char_of_int (List.length cs - 1));
             List.iter o.output_char cs
       | (b, c) ->
