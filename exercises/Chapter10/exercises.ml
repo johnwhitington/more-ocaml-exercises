@@ -75,9 +75,9 @@ let rec split_at_inner before n l =
 let split_at n l =
   split_at_inner [] n l
 
-let ceiling f l =
+let last f l =
   match List.filter (fun x -> x > f) (List.sort compare l) with
-    [] -> raise (Invalid_argument "ceiling")
+    [] -> raise (Invalid_argument "last")
   | h::t ->
       let before, after = split_at h l in
         (before, h, after)
@@ -85,7 +85,7 @@ let ceiling f l =
 (* Find the next permutation *)
 let next_permutation l =
   let before_f, f, after_f = first l in
-    let before_c, c, after_c = ceiling f after_f in
+    let before_c, c, after_c = last f after_f in
       before_f @ [c] @ List.rev (before_c @ [f] @ after_c)
 
 (* Predicate on non-increasingness *)

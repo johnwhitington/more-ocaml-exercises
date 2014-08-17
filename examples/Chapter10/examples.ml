@@ -42,14 +42,14 @@ let rec perms l =
           l)
 
 (* Version which can give the next permutation -- lexicographic order *)
-let firstchar arr =
+let first arr =
   let f = ref (Array.length arr - 1) in
     for x = 0 to Array.length arr - 2 do
       if arr.(x) < arr.(x + 1) then f := x
     done;
     !f
 
-let ceiling arr f =
+let last arr f =
   let c = ref (-1) in
     for x = Array.length arr - 1 downto f + 1 do
       if arr.(x) > arr.(f) && (!c = (-1) || arr.(x) < arr.(!c)) then c := x
@@ -68,8 +68,8 @@ let sort_subarray arr o l =
 
 let next_permutation arr_in =
   let arr = Array.copy arr_in in
-  let f = firstchar arr in
-  let c = ceiling arr f in
+  let f = first arr in
+  let c = last arr f in
     swap arr f c;
     sort_subarray arr (f + 1) (Array.length arr - 1 - f);
     arr
