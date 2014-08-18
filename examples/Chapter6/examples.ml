@@ -686,6 +686,7 @@ let decode_fax i o w h =
 
 let decompress_string_ccitt = process decode_fax
 
+(* Try this: *)
 
 (*open Examples;;
 
@@ -695,7 +696,7 @@ let c = compress_string_ccitt p 80 21;;
 
 print_packedstring max_int c;;
 
-let d = decompress_string_ccitt c 80 21;; (* FAILS: bad white code -- fix *)
+let d = decompress_string_ccitt c 80 21;;
 
 print_packedstring 80 d;;*)
 
