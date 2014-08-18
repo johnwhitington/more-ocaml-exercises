@@ -40,7 +40,7 @@ let print_nums nums =
   print_header ();
   List.iter (fun (a, b, c) -> print_line a b c) nums
 
-let _ = print_nums data
+let example1 () = print_nums data
 
 (* Things in columns, with flags and precisions. *)
 let data =
@@ -63,5 +63,5 @@ let print_nums nums =
 let print_point p =
   Printf.printf "%s = (%f, %f)%!" p.label p.x p.y
 
-let _ = print_nums data
+let example2 () = print_nums data
 
