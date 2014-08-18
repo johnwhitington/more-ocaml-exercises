@@ -69,7 +69,7 @@ let print_header filename =
     let receive = getval b 16 in
     let checksum = getval b 16 in
     let urgent_pointer = getval b 16 in
-      print_string "\nSource port = ";
+      print_string "Source port = ";
       print_int src_port;
       print_string "\nDestination = ";
       print_int dest_port;
@@ -97,7 +97,7 @@ let print_header filename =
         print_string "\n";
         close_in ch
 
-let _ = print_header "packet.bin"
+let input_example () = print_header "packet.bin"
 
 (* Output bit streams *)
 type output_bits =
@@ -163,6 +163,6 @@ let output_header filename =
     flush bits;
     close_out ch
 
-let _ =
+let output_example () =
   output_header "packet_out.bin"
 
