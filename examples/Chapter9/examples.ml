@@ -132,7 +132,7 @@ let tests =
    ("\\+", "+", true);
    ("\\*", "*", true)]
 
-let _ =
+let test () =
   List.iter
     (fun (pattern, str, expected) ->
        let result = search pattern str in
