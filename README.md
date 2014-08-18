@@ -1,11 +1,12 @@
 more-ocaml-exercises
 ====================
 
-Examples and Exercises for the book "More OCaml".
+Examples and Exercises for the book "More OCaml". Should work on Windows, Mac
+OS X, and Unix (including Linux).
 
-To build run ./build
+To build everything, run the script 'build'.
 
-To clean run ./clean
+To clean up, run the 'clean' script.
 
 Special instructions for each example or exercise are given in the file
 "README.txt" in each directory.
