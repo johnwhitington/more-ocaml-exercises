@@ -1,4 +1,4 @@
-Examples for Chapter 2
+Examples for Chapter 3
 ======================
 
 These examples can be explored either by copying-and-pasting into the OCaml

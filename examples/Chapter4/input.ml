@@ -66,7 +66,7 @@ let rec read_words_inner i a =
 let read_words i =
   read_words_inner i []
 
-let _ =
+let input_example () =
   print_endline "Words read:";
   List.iter print_endline (read_words (input_of_string example))
 
@@ -100,7 +100,7 @@ let output_int_list o ls =
     ls;
   o.output_char ']'
 
-let _ =
+let output_example () =
   print_endline "Using output_int_list:";
   output_int_list (output_of_channel stdout) [1; 2; 3; 4; 5];
   print_endline ""
