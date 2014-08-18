@@ -1,73 +1,67 @@
 #!/bin/bash
-echo "**libs"
+echo "**************************  The 'more' library"
 cd more; make
-echo "**Examples, Ch 1"
+echo "**************************  Examples, Chapter 1"
 cd -; cd examples/Chapter1; make
-echo "**Examples, Ch 2"
+echo "**************************  Examples, Chapter 2"
 cd -; cd examples/Chapter2; make
-echo "**Examples, Ch 3"
+echo "**************************  Examples, Chapter 3"
 cd -; cd examples/Chapter3; make
-echo "**Examples, Ch 4"
+echo "**************************  Examples, Chapter 4"
 cd -; cd examples/Chapter4; make
-echo "**Examples, Ch 5"
+echo "**************************  Examples, Chapter 5"
 cd -; cd examples/Chapter5; make
-echo "**Examples, Ch 6"
+echo "**************************  Examples, Chapter 6"
 cd -; cd examples/Chapter6; make
-echo "**Examples, Ch 7"
+echo "**************************  Examples, Chapter 7"
 cd -; cd examples/Chapter7; make
-echo "**Examples, Ch 8"
+echo "**************************  Examples, Chapter 8"
 cd -; cd examples/Chapter8; make
-echo "**Examples, Ch 9"
+echo "**************************  Examples, Chapter 9"
 cd -; cd examples/Chapter9; make
-echo "**Examples, Ch 10"
+echo "**************************  Examples, Chapter 10"
 cd -; cd examples/Chapter10; make
-echo "**Examples, Ch 11"
+echo "**************************  Examples, Chapter 11"
 cd -; cd examples/Chapter11; make
-echo "**Examples, Ch 12"
+echo "**************************  Examples, Chapter 12"
 cd -; cd examples/Chapter12; make
-echo "**Exercises, Ch 1"
+echo "**************************  Exercises, Chapter 1"
 cd -; cd exercises/Chapter1; make 
-echo "**Exercises, Ch 2"
+echo "**************************  Exercises, Chapter 2"
 cd -; cd exercises/Chapter2; make 
-echo "**Exercises, Ch 3"
+echo "**************************  Exercises, Chapter 3"
 cd -; cd exercises/Chapter3; make 
-echo "**Exercises, Ch 4"
+echo "**************************  Exercises, Chapter 4"
 cd -; cd exercises/Chapter4; make 
-echo "**Exercises, Ch 5"
+echo "**************************  Exercises, Chapter 5"
 cd -; cd exercises/Chapter5; make 
-echo "**Exercises, Ch 6"
+echo "**************************  Exercises, Chapter 6"
 cd -; cd exercises/Chapter6; make 
-echo "**Exercises, Ch 7"
+echo "**************************  Exercises, Chapter 7"
 cd -; cd exercises/Chapter7; make 
-echo "**Exercises, Ch 8"
+echo "**************************  Exercises, Chapter 8"
 cd -; cd exercises/Chapter8; make 
-echo "**Exercises, Ch 9"
+echo "**************************  Exercises, Chapter 9"
 cd -; cd exercises/Chapter9; make 
-echo "**Exercises, Ch 10"
+echo "**************************  Exercises, Chapter 10"
 cd -; cd exercises/Chapter10; make 
-echo "**Exercises, Ch 11"
+echo "**************************  Exercises, Chapter 11"
 cd -; cd exercises/Chapter11; make 
-echo "**Exercises, Ch 12"
+echo "**************************  Exercises, Chapter 12"
 cd -; cd exercises/Chapter12; make
-echo "**Examples, PDF"
+echo "**************************  Examples, PDF"
 cd -; cd examples/PDF; make
-echo "**Examples, PDF/circles"
+echo "**************************  Examples, PDF/circles"
 cd -; cd examples/PDF/circles; make 
-echo "**Examples, PDF/text"
+echo "**************************  Examples, PDF/text"
 cd -; cd examples/PDF/text; make 
-echo "**Exercises, PDF/textq1"
+echo "**************************  Exercises, PDF/textq1"
 cd -; cd exercises/PDF/textq1; make 
-echo "**Exercises, PDF/textq2"
+echo "**************************  Exercises, PDF/textq2"
 cd -; cd exercises/PDF/textq2; make 
-echo "**Exercises, PDF/textq3"
+echo "**************************  Exercises, PDF/textq3"
 cd -; cd exercises/PDF/textq3; make 
-echo "**Exercises, PDF/textq4"
+echo "**************************  Exercises, PDF/textq4"
 cd -; cd exercises/PDF/textq4; make 
-echo "**Exercises, PDF/writingq3"
+echo "**************************  Exercises, PDF/writingq3"
 cd -; cd exercises/PDF/writingq3; make 
-echo "**Examples PDF"
-cd -; cd examples/PDF; make
-echo "**Examples PDF/circles"
-cd -; cd examples/PDF/circles; make
-echo "**Examples PDF/text"
-cd -; cd examples/PDF/text; make
