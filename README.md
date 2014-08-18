@@ -8,5 +8,5 @@ To build run ./build
 To clean run ./clean
 
 It is released under the LGPL with special linking exception (see LGPL.txt).
-The file "OCamlmakefile" is due to Markus Mottl, and is under the same licence.
+The file "OCamlMakefile" is due to Markus Mottl, and is under the same licence.
 
