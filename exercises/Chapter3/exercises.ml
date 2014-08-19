@@ -83,7 +83,7 @@ let write_gc_summary filename =
       output_string ch (string_of_int major_collections);
       close_out ch
 
-let _ = write_gc_summary "gc.txt"
+let write_summary () = write_gc_summary "gc.txt"
 
 (* 5 (b) *)
 let start_of_major = 0x001
