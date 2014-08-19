@@ -124,7 +124,7 @@ let single_line_input_of_channel ch =
         match input_char ch with '\n' -> raise End_of_file | c -> c);
    in_channel_length = in_channel_length ch}
 
-let _ =
+let input_a_string () =
   input_string (single_line_input_of_channel stdin) max_int
 
 (* 6 *)

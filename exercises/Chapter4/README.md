@@ -1,4 +1,12 @@
-more-ocaml-exercises
-====================
+Answers for Chapter 4
+=====================
 
-Examples and Exercises for the book "More OCaml"
+These answers can be copy & pasted into the OCaml top level, or accessed from
+the specially-built top level "exercises.top".
+
+        OCaml
+
+# open Exercises;;
+# build_buffer ();;
+- : string = "ABC"
+
