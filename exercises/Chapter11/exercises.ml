@@ -205,7 +205,7 @@ let benchmark_intset name ns =
             "For %s, insertion took %f, membership %f\n"
             name (b -. a) (c -. b)
 
-let _ =
+let benchmark () =
   benchmark_intset "ordered" nums;
   benchmark_intset "unordered" rand
 

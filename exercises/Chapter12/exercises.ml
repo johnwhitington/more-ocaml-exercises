@@ -82,7 +82,7 @@ let rec next_moves turn board =
   in
     Move2 (board, next)
 
-let game_tree =
+let game_tree2 =
   next_moves O [E; E; E; E; E; E; E; E; E]
 
 (* We wish to force evaluation once, take only the case where the centre is
@@ -98,7 +98,7 @@ let rec num_wins turn (Move2 (b, bs)) =
 
 let pos_wins turn pos =
   List.fold_left ( + ) 0
-    (List.map (num_wins turn) (select_case pos game_tree))
+    (List.map (num_wins turn) (select_case pos game_tree2))
 
 let rec drawn (Move2 (b, bs)) =
     (if
@@ -111,7 +111,7 @@ let rec drawn (Move2 (b, bs)) =
 
 let draws pos =
   List.fold_left ( + ) 0
-    (List.map drawn (select_case pos game_tree))
+    (List.map drawn (select_case pos game_tree2))
 
 let centre = [E; E; E; E; O; E; E; E; E] 
 
@@ -186,7 +186,7 @@ let rec next_moves xs os o_is_playing =
   in
     Move (xs, os, next)
 
-let game_tree = next_moves [] [] true
+let game_tree3 = next_moves [] [] true
 
 let rec xwins (Move (xs, os, cs)) =
   (if won xs then 1 else 0) +
