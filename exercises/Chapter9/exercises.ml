@@ -65,7 +65,7 @@ let profile f =
     done;
     Unix.gettimeofday () -. t
 
-let _ =
+let test () =
   Printf.printf "Naive version took %f seconds\n" (profile search_naive);
   Printf.printf "Better version tool %f seconds\n" (profile search_better)
 

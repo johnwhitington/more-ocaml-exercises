@@ -209,19 +209,6 @@ let _ =
   benchmark_intset "ordered" nums;
   benchmark_intset "unordered" rand
 
-(* Find how much memory is used by inserting 50000 random elements into a set
- * in each set representation *)
-let memory_benchmark l =
-  List.iter
-    (fun (n, s) ->
-      let module S = (val s : SetType) in
-        let min, prom, maj = Gc.counters () in
-          let _ = S.set_of_list l in
-            let min2, prom2, maj2 = Gc.counters () in
-              Printf.printf
-                "Memory used creating set made from %s items is %f \n%!"
-                n ((min2 +. maj2 -. prom2) -. (min +. maj -. prom)))
-    implementations
-
+(* The memory benchmark is in the examples *)
 
 

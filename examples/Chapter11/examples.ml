@@ -208,6 +208,20 @@ let size_benchmark str l =
               str n (t_end -. t_start))
     implementations
 
+(* Find how much memory is used by inserting 50000 random elements into a set
+ * in each set representation *)
+let memory_benchmark l =
+  List.iter
+    (fun (n, s) ->
+      let module S = (val s : SetType) in
+        let min, prom, maj = Gc.counters () in
+          let _ = S.set_of_list l in
+            let min2, prom2, maj2 = Gc.counters () in
+              Printf.printf
+                "Memory used creating set made from %s items is %f \n%!"
+                n ((min2 +. maj2 -. prom2) -. (min +. maj -. prom)))
+    implementations
+
 (*let _ =
   insertion_benchmark "ordered" nums;
   print_newline ();
@@ -223,5 +237,8 @@ let size_benchmark str l =
   print_newline ();
   size_benchmark "ordered" nums;
   print_newline ();
-  size_benchmark "unordered" rand; *)
+  size_benchmark "unordered" rand;
+  print_newline ();
+  memory_benchmark nums;
+  memory_benchmark rand *)
 
