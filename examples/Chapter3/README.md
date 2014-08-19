@@ -2,7 +2,7 @@ Examples for Chapter 3
 ======================
 
 These examples can be explored either by copying-and-pasting into the OCaml
-top-level, or by the prepared top level "example.top":
+top-level, or by the prepared top level "examples.top":
 
         OCaml
 
