@@ -27,10 +27,10 @@ let hex_of_string s =
 (* 3 *)
 let mkstring () = "string"
 
-let _ = Printf.printf "%s" (mkstring ())
+let exercise_3 () = Printf.printf "%s" (mkstring ())
 
 (* 4 *)
-let _ = Printf.sprintf "(%*i)" 10 1
+let exercise_4 () = Printf.sprintf "(%*i)" 10 1
 
 let print_integers w ns =
   List.iter (Printf.printf "(%*i)" w) ns
