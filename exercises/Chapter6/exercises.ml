@@ -214,5 +214,3 @@ let print_histogram =
   Array.iteri
     (fun x n -> if n > 0 then Printf.printf "%i runs of length %i\n" n x)
 
-(* FIXME: Add code to actually print out the example when this is run. *)
-
