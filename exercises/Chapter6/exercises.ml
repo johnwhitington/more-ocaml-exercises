@@ -134,13 +134,7 @@ let rec decompress_inner a l =
 
 let decompress l = decompress_inner [] l
 
-(* 2. Huffman tree from codes. *)
-let from s e =
-  if e < s then raise (Invalid_argument "from") else
-    let n = ref [] in
-      for x = s to e do n := x :: !n done;
-      List.rev !n
-
+(* 2. Tree from codes. *)
 type tree = Lf | Code of int | Br of tree * tree
 
 let rec add_elt tr (l, n) =
