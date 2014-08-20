@@ -57,8 +57,7 @@ let hello =
    Pdf.trailer =
      Pdf.Dictionary
        [("/Size", Pdf.Integer 5);
-        ("/Root", Pdf.Indirect 2);
-        ("/ID", Pdf.Array [Pdf.String "FIXME"; Pdf.String "FIXME"])]}
+        ("/Root", Pdf.Indirect 2)]}
 
 let objects3 str str2 str3 =
   [(1,
@@ -128,8 +127,7 @@ let hello3 =
    Pdf.trailer =
      Pdf.Dictionary
        [("/Size", Pdf.Integer 10);
-        ("/Root", Pdf.Indirect 2);
-        ("/ID", Pdf.Array [Pdf.String "FIXME"; Pdf.String "FIXME"])]}
+        ("/Root", Pdf.Indirect 2)]}
 
 let append a b =
   List.rev_append (List.rev a) b
@@ -167,8 +165,7 @@ let graph =
    Pdf.trailer =
      Pdf.Dictionary
        [("/Size", Pdf.Integer 5);
-        ("/Root", Pdf.Indirect 2);
-        ("/ID", Pdf.Array [Pdf.String "FIXME"; Pdf.String "FIXME"])]}
+        ("/Root", Pdf.Indirect 2)]}
 
 (* Consider the tree Br (Br (Lf, 1, Lf), 2, Br (Lf, 3, Lf)). We will represent it as:
 
