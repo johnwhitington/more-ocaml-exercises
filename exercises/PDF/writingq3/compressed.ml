@@ -399,16 +399,10 @@ let rec read_up_to v i n w =
       x when x = v -> (ignore (getbit i)); read_up_to v i (n + 1) w
     | x -> (n, v)
 
-let debug_string_of_code code =
-  let b = Buffer.create 100 in
-    List.iter (fun c -> Buffer.add_string b (Printf.sprintf "%i " c)) code;
-    Buffer.contents b
-
 let encode_fax i o w h =
   let rec encode_fax_line i o w =
     if w > 0 then
       let n, isblack = read_up_to (peekbit i) i 0 w in
-        Printf.printf "Encoded isblack %B, length %i, makes code %s\n" isblack n (debug_string_of_code (code isblack n));
         List.iter (putbitint o) (code isblack n);
         encode_fax_line i o (w - n)
   in
@@ -710,10 +704,12 @@ let hello_ccitt =
      objects
        hello_text_ccitt
        [("/Filter", Pdf.Name "/CCITTFaxDecode");
-        ("/Rows", Pdf.Integer 1);
-        ("/Columns", Pdf.Integer (52 * 8));
-        ("/EndOfBlock", Pdf.Boolean false)
-       ];
+        ("/DecodeParms",
+           Pdf.Dictionary
+             [("/Rows", Pdf.Integer 1);
+              ("/Columns", Pdf.Integer (52 * 8));
+              ("/BlackIs1", Pdf.Boolean true);
+              ("/EndOfBlock", Pdf.Boolean false)])];
    Pdf.trailer =
      Pdf.Dictionary
        [("/Size", Pdf.Integer 5);
