@@ -31,13 +31,13 @@ let copy l =
 let append x y =
   List.fold_right (fun e a -> e :: a) x y
 
-let concat l = List.fold_left ( @ ) [] l
-
 let split l =
   List.fold_right
     (fun (x, y) (xs, ys) -> (x :: xs, y :: ys))
     l
     ([], [])
+
+let concat l = List.fold_left ( @ ) [] l
 
 type 'a tree =
     Lf
