@@ -1,4 +1,4 @@
-Chapter 16, Question 1
+Chapter 16, Question 4
 ======================
 
 The executable is "text", the top level is "text.top".
