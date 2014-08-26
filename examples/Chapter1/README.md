@@ -6,8 +6,9 @@ top-level, or by the prepared top level "examples.top":
 
         OCaml
 
-# open Examples;;
-# setify [1; 2; 3; 3; 2; 1];;
+&#35; open Examples;;
+
+&#35; setify [1; 2; 3; 3; 2; 1];;
 - : int list = [3; 2; 1]
 
 
