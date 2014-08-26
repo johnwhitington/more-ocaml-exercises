@@ -3,7 +3,7 @@ SOURCES = input.ml text.ml
 
 RESULT = text
 
-INCDIRS = ../../../more/ ../../../examples/pdf/ ../../../examples
+INCDIRS = ../../../more/ ../../../examples/PDF/ ../../../examples
 
 LIBS = more pdfmain 
 

@@ -3,7 +3,7 @@ SOURCES = compressed.ml
 
 RESULT = compressed
 
-INCDIRS = ../../../more/ ../../../examples/Chapter4/ ../../../examples/Chapter5/ ../../../examples/pdf/ ../../../examples
+INCDIRS = ../../../more/ ../../../examples/Chapter4/ ../../../examples/Chapter5/ ../../../examples/PDF/ ../../../examples
 
 LIBS = input bits pdfmain 
 
