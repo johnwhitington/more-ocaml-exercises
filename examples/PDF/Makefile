@@ -1,7 +1,7 @@
 # Build the camlpdf library as byte code and native code
-PDFMODS = pdf pdfwrite pdfpage pdfhello pdfmain
+PDFMODS = pdf pdfwrite pdfpage pdfhello
 
-SOURCES = $(foreach x,$(PDFMODS),$(x).ml $(x).mli)
+SOURCES = $(foreach x,$(PDFMODS),$(x).ml $(x).mli) pdfmain.ml
 
 MODS = more
 
