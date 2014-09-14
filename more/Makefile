@@ -1,4 +1,3 @@
-# Build the camlpdf library as byte code and native code
 SOURCES = more.mli more.ml
 
 RESULT = more
