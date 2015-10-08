@@ -247,8 +247,8 @@ let white_terminating_codes =
     [0; 0; 1; 1; 0; 1; 0; 0]|]
 
 let black_terminating_codes =
-  [|[0; 0; 0; 1; 1; 0; 1; 1; 1];
-    [0; 1; 0];
+  [|[0; 0; 0; 0; 1; 1; 0; 1; 1; 1];
+    [0; 1; 0]; 
     [1; 1];
     [1; 0];
     [0; 1; 1];
@@ -283,6 +283,7 @@ let black_terminating_codes =
     [0; 0; 0; 0; 0; 1; 1; 0; 1; 0; 1; 1];
     [0; 0; 0; 0; 1; 1; 0; 1; 0; 0; 1; 0];
     [0; 0; 0; 0; 1; 1; 0; 1; 0; 0; 1; 1];
+    [0; 0; 0; 0; 1; 1; 0; 1; 0; 1; 0; 0];
     [0; 0; 0; 0; 1; 1; 0; 1; 0; 1; 0; 1];
     [0; 0; 0; 0; 1; 1; 0; 1; 0; 1; 1; 0];
     [0; 0; 0; 0; 1; 1; 0; 1; 0; 1; 1; 1];
@@ -336,6 +337,7 @@ let white_make_up_codes =
     [0; 1; 1; 0; 1; 1; 0; 1; 1];
     [0; 1; 0; 0; 1; 1; 0; 0; 0];
     [0; 1; 0; 0; 1; 1; 0; 0; 1];
+    [0; 1; 0; 0; 1; 1; 0; 1; 0];
     [0; 1; 1; 0; 0; 0];
     [0; 1; 0; 0; 1; 1; 0; 1; 1]|]
 
@@ -373,7 +375,7 @@ let rec code isblack length =
   if length > 1776 || length < 0 then
     raise (Invalid_argument "codes: bad length")
   else
-    if length > 64 then
+    if length >= 64 then
       let m =
         if isblack
           then black_make_up_codes.(length / 64 - 1)
