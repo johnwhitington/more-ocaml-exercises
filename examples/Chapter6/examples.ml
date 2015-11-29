@@ -403,7 +403,7 @@ let encode_fax i o w h =
         encode_fax_line i o (w - n)
   in
     for x = 1 to h do
-      if peekbit i then List.iter (putbitint o) (code true 0);
+      if peekbit i then List.iter (putbitint o) (code false 0);
       encode_fax_line i o w
     done
 
