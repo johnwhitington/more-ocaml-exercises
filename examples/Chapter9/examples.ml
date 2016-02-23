@@ -56,12 +56,12 @@ let search = search' 0
 + : one or more matches of the next character
 \ : escape *)
 
-(* Returns the number of characters, zero or more, equal to 'ch' in ss starting
- * at sp *)
-let swallow_all ch p sp =
+(* Returns the number of characters, zero or more, equal to 'ch' in s starting
+at sp *)
+let swallow_all ch s sp =
   let x = ref sp in
-    while !x < String.length p && p.[!x] = ch do x := !x + 1 done;
-    !x
+    while !x < String.length s && s.[!x] = ch do x := !x + 1 done;
+    !x - sp
 
 let rec at p pp s sp =
   pp > String.length p - 1 || (* used whole pattern *)
@@ -74,12 +74,12 @@ let rec at p pp s sp =
            else Some (2, 0) (* no match *)
        | '*' -> 
            if pp + 1 > String.length p - 1 then None else (* * at end of pattern *)
-             Some (2, swallow_all p.[pp + 1] p sp) (* read zero or more items *)
+             Some (2, swallow_all p.[pp + 1] s sp) (* read zero or more items *)
        | '+' ->
            if pp + 1 > String.length p - 1 then None (* + at end of pattern *)
            else if sp > String.length s - 1 then None (* Nothing left to match *)
            else if p.[pp + 1] = s.[sp] then
-             Some (2, swallow_all p.[pp + 1] p sp) (* read one or more items *)
+             Some (2, swallow_all p.[pp + 1] s sp) (* read one or more items *)
            else None (* did not match *)
        | '\\' -> (* Next character to be taken literally *)
            let matched =
@@ -130,7 +130,9 @@ let tests =
    ("\\\\", "\\", true);
    ("\\?", "?", true);
    ("\\+", "+", true);
-   ("\\*", "*", true)]
+   ("\\*", "*", true);
+   ("*ab", "aab", true);
+   ("ab*ab", "aabaaab", true)]
 
 let test () =
   List.iter
