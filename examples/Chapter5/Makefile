@@ -10,7 +10,7 @@ OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
 
-all : native-code native-code-library byte-code-library top
+all : native-code native-code-library byte-code-library
 
 OCAMLMAKEFILE = ../../more/OCamlMakefile
 

@@ -10,7 +10,7 @@ OCAMLNCFLAGS = -g
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
 
-all : byte-code top
+all : byte-code
 
 OCAMLMAKEFILE = ../../more/OCamlMakefile
 
