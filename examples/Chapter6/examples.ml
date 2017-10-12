@@ -2,15 +2,15 @@ open More
 open Input
 open Bits
 
-let string_of_int_list l =
-  let s = String.create (List.length l) in
-    List.iteri (fun n x -> s.[n] <- char_of_int x) l;
-    s
+let bytes_of_int_list l =
+  let b = Bytes.create (List.length l) in
+    List.iteri (fun n x -> Bytes.set b n (char_of_int x)) l;
+    b
 
-let int_list_of_string s =
+let int_list_of_bytes b =
   let l = ref [] in
-    for x = String.length s - 1 downto 0 do
-      l := int_of_char s.[x] :: !l
+    for x = Bytes.length b - 1 downto 0 do
+      l := int_of_char (Bytes.get b x) :: !l
     done;
     !l
 

@@ -104,12 +104,12 @@ type output2 =
    rewind : unit -> unit;
    out_channel_length : unit -> int}
 
-let output_of_string s =
+let output_of_bytes b =
   let pos = ref 0 in
     {output_char =
        (fun c ->
-          if !pos < String.length s
-            then (s.[!pos] <- c; pos := !pos + 1)
+          if !pos < Bytes.length b
+            then (Bytes.set b !pos c; pos := !pos + 1)
             else raise End_of_file);
      rewind =
        (fun () ->
@@ -117,7 +117,7 @@ let output_of_string s =
             then pos := !pos - 1
             else raise (Failure "rewind"));
      out_channel_length =
-       (fun () -> String.length s)}
+       (fun () -> Bytes.length b)}
 
 (* We name this output_bits2 since one cannot have two types with the same name
  * in a single file. *)

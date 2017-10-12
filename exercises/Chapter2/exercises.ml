@@ -37,7 +37,9 @@ let rec unleave (Cons (h, tf)) =
 (* 6 *)
 let rec letter_string n =
   if n <= 26 then
-    let s = String.create 1 in s.[0] <- char_of_int (n + 64); s
+    let s = Bytes.create 1 in
+      Bytes.set s 0 (char_of_int (n + 64));
+      Bytes.to_string s
   else
     letter_string ((n - 1) / 26) ^
     letter_string (((n - 1) mod 26) + 1)
