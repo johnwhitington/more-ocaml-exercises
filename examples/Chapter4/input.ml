@@ -80,15 +80,15 @@ let output_of_channel ch =
   {output_char = (fun c -> output_byte ch (int_of_char c));
    out_channel_length = (fun () -> out_channel_length ch)}
 
-let output_of_bytes s =
+let output_of_bytes b =
   let pos = ref 0 in
     {output_char =
        (fun c ->
-          if !pos < Bytes.length s
-            then (s.[!pos] <- c; pos := !pos + 1)
+          if !pos < Bytes.length b
+            then (Bytes.set b !pos c; pos := !pos + 1)
             else raise End_of_file);
      out_channel_length =
-       (fun () -> Bytes.length s)}
+       (fun () -> Bytes.length b)}
 
 let output_int_list o ls =
   o.output_char '[';
