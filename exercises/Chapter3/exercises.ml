@@ -67,7 +67,8 @@ let write_gc_summary filename =
        Gc.promoted_words;
        Gc.major_words;
        Gc.minor_collections;
-       Gc.major_collections}
+       Gc.major_collections;
+       _}
     =
       Gc.stat ()
     in
